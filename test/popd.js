@@ -2,11 +2,11 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
-var root = path.resolve();
+var rootDir = path.resolve();
 
 function reset() {
   shell.dirs('-c');
-  shell.cd(root);
+  shell.cd(rootDir);
 }
 
 test.before(t => {
@@ -23,7 +23,7 @@ test('No Test Title #54', t => {
   var trail = shell.popd();
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [root]);
+  t.deepEqual(trail, [rootDir]);
 });
 
 test('No Test Title #55', t => {
@@ -33,8 +33,8 @@ test('No Test Title #55', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -44,8 +44,8 @@ test('No Test Title #56', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -56,9 +56,9 @@ test('No Test Title #57', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -67,8 +67,8 @@ test('No Test Title #58', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -77,7 +77,7 @@ test('No Test Title #59', t => {
   t.is(shell.error(), null);
   t.is(trail.length, 1);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [root]);
+  t.deepEqual(trail, [rootDir]);
 });
 
 test('Valid by index', t => {
@@ -85,7 +85,7 @@ test('Valid by index', t => {
   var trail = shell.popd('+0');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [root]);
+  t.deepEqual(trail, [rootDir]);
 });
 
 test('No Test Title #60', t => {
@@ -93,7 +93,7 @@ test('No Test Title #60', t => {
   var trail = shell.popd('+1');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+  t.deepEqual(trail, [path.resolve(rootDir, 'resources/pushd')]);
 });
 
 test('No Test Title #61', t => {
@@ -101,7 +101,7 @@ test('No Test Title #61', t => {
   var trail = shell.popd('-0');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+  t.deepEqual(trail, [path.resolve(rootDir, 'resources/pushd')]);
 });
 
 test('No Test Title #62', t => {
@@ -109,7 +109,7 @@ test('No Test Title #62', t => {
   var trail = shell.popd('-1');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [root]);
+  t.deepEqual(trail, [rootDir]);
 });
 
 test('No Test Title #63', t => {
@@ -117,7 +117,7 @@ test('No Test Title #63', t => {
   var trail = shell.popd('-n');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
-  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+  t.deepEqual(trail, [path.resolve(rootDir, 'resources/pushd')]);
 });
 
 test('Invalid', t => {
@@ -125,17 +125,17 @@ test('Invalid', t => {
   t.truthy(shell.error('popd: directory stack empty\n'));
 });
 
-test('Test that the root dir is not stored', t => {
+test('Test that rootDirDir is not stored', t => {
   shell.cd('resources/pushd');
   shell.pushd('b');
   var trail = shell.popd();
   t.is(shell.error(), null);
-  t.is(trail[0], path.resolve(root, 'resources/pushd'));
+  t.is(trail[0], path.resolve(rootDir, 'resources/pushd'));
   t.is(process.cwd(), trail[0]);
   shell.popd();
   t.truthy(shell.error(), null);
 });
 
 test('No Test Title #64', t => {
-  shell.cd(root);
+  shell.cd(rootDir);
 });

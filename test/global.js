@@ -1,8 +1,7 @@
 /* globals cat, config, cp, env, error, exit, mkdir, rm */
 import test from 'ava';
-import common from '../src/common';
-
 import '../global';
+import common from '../src/common';
 
 test.before(t => {
   config.silent = true;

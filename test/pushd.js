@@ -2,11 +2,11 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
-var root = path.resolve();
+var rootDir = path.resolve();
 
 function reset() {
   shell.dirs('-c');
-  shell.cd(root);
+  shell.cd(rootDir);
 }
 
 test.before(t => {
@@ -23,8 +23,8 @@ test('Push valid directories', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -33,9 +33,9 @@ test('No Test Title #67', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -44,10 +44,10 @@ test('No Test Title #68', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -56,11 +56,11 @@ test('No Test Title #69', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -69,11 +69,11 @@ test('Push stuff around with positive indices', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -82,11 +82,11 @@ test('No Test Title #70', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root,
-    path.resolve(root, 'resources/pushd/b/c')
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c')
   ]);
 });
 
@@ -95,11 +95,11 @@ test('No Test Title #71', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd'),
-    root,
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a')
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a')
   ]);
 });
 
@@ -108,11 +108,11 @@ test('No Test Title #72', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root,
-    path.resolve(root, 'resources/pushd/b/c')
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c')
   ]);
 });
 
@@ -121,11 +121,11 @@ test('No Test Title #73', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -134,11 +134,11 @@ test('Push stuff around with negative indices', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    root,
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd')
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd')
   ]);
 });
 
@@ -147,11 +147,11 @@ test('No Test Title #74', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root,
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b')
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b')
   ]);
 });
 
@@ -160,11 +160,11 @@ test('No Test Title #75', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    root,
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd')
+    rootDir,
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd')
   ]);
 });
 
@@ -173,11 +173,11 @@ test('No Test Title #76', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -186,11 +186,11 @@ test('No Test Title #77', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    path.resolve(root, 'resources/pushd/b/c'),
-    path.resolve(root, 'resources/pushd/b'),
-    path.resolve(root, 'resources/pushd/a'),
-    path.resolve(root, 'resources/pushd'),
-    root
+    path.resolve(rootDir, 'resources/pushd/b/c'),
+    path.resolve(rootDir, 'resources/pushd/b'),
+    path.resolve(rootDir, 'resources/pushd/a'),
+    path.resolve(rootDir, 'resources/pushd'),
+    rootDir
   ]);
 });
 
@@ -200,7 +200,7 @@ test('Push without changing directory or resolving paths', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    root,
+    rootDir,
     'resources/pushd'
   ]);
 });
@@ -210,7 +210,7 @@ test('No Test Title #78', t => {
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
-    root,
+    rootDir,
     'resources/pushd/a',
     'resources/pushd'
   ]);
@@ -233,14 +233,14 @@ test(
     var trail = shell.pushd('resources/pushd');
     t.is(shell.error(), null);
     t.is(trail.length, 2);
-    t.is(path.relative(root, trail[0]), path.join('resources', 'pushd'));
-    t.is(trail[1], root);
+    t.is(path.relative(rootDir, trail[0]), path.join('resources', 'pushd'));
+    t.is(trail[1], rootDir);
     t.is(process.cwd(), trail[0]);
     var trail = shell.pushd();
     t.is(shell.error(), null);
     t.is(trail.length, 2);
-    t.is(trail[0], root);
-    t.is(path.relative(root, trail[1]), path.join('resources', 'pushd'));
+    t.is(trail[0], rootDir);
+    t.is(path.relative(rootDir, trail[1]), path.join('resources', 'pushd'));
     t.is(process.cwd(), trail[0]);
   }
 );
@@ -251,9 +251,9 @@ test(
     var trail = shell.pushd('resources/pushd/a');
     t.is(shell.error(), null);
     t.is(trail.length, 3);
-    t.is(path.relative(root, trail[0]), path.join('resources', 'pushd', 'a'));
-    t.is(trail[1], root);
-    t.is(path.relative(root, trail[2]), path.join('resources', 'pushd'));
+    t.is(path.relative(rootDir, trail[0]), path.join('resources', 'pushd', 'a'));
+    t.is(trail[1], rootDir);
+    t.is(path.relative(rootDir, trail[2]), path.join('resources', 'pushd'));
     t.is(process.cwd(), trail[0]);
   }
 );
@@ -262,9 +262,9 @@ test('No Test Title #79', t => {
   var trail = shell.pushd();
   t.is(shell.error(), null);
   t.is(trail.length, 3);
-  t.is(trail[0], root);
-  t.is(path.relative(root, trail[1]), path.join('resources', 'pushd', 'a'));
-  t.is(path.relative(root, trail[2]), path.join('resources', 'pushd'));
+  t.is(trail[0], rootDir);
+  t.is(path.relative(rootDir, trail[1]), path.join('resources', 'pushd', 'a'));
+  t.is(path.relative(rootDir, trail[2]), path.join('resources', 'pushd'));
   t.is(process.cwd(), trail[0]);
 });
 

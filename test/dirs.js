@@ -5,21 +5,18 @@ import path from 'path';
 test.before(t => {
   shell.config.silent = true;
 
-  var root = path.resolve();
-
   shell.pushd('resources/pushd');
   shell.pushd('a');
 });
-
 
 //
 // Valids
 //
 
 var trail = [
-  path.resolve(root, 'resources/pushd/a'),
-  path.resolve(root, 'resources/pushd'),
-  root
+  path.resolve(path.resolve(), 'resources/pushd/a'),
+  path.resolve(path.resolve(), 'resources/pushd'),
+  path.resolve()
 ];
 
 test('No Test Title #91', t => {
