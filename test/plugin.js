@@ -43,7 +43,7 @@ test('All plugin utils exist', t => {
 });
 
 test('The plugin does not exist before it\'s registered', t => {
-  t.is(!shell.foo);
+  t.falsy(shell.foo);
 });
 
 test('Register the plugin', t => {
