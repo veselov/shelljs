@@ -71,7 +71,7 @@ test('common.parseOptions (normal case)', t => {
   var result = common.parseOptions('-Rf', {
     'R': 'recursive',
     'f': 'force',
-    'r': 'reverse'
+    'r': 'reverse',
   });
 
   t.truthy(result.recursive === true);
@@ -83,7 +83,7 @@ test('common.parseOptions (with mutually-negating options)', t => {
   var result = common.parseOptions('-f', {
     'n': 'no_force',
     'f': '!no_force',
-    'R': 'recursive'
+    'R': 'recursive',
   });
 
   t.truthy(result.recursive === false);
@@ -97,7 +97,7 @@ test(
     var options = {
       'n': 'no_force',
       'f': '!no_force',
-      'R': 'recursive'
+      'R': 'recursive',
     };
     var result = common.parseOptions('-fn', options);
     t.truthy(result.recursive === false);
@@ -114,7 +114,7 @@ test('common.parseOptions using an object to hold options', t => {
   var result = common.parseOptions({ '-v': 'some text here' }, {
     'v': 'value',
     'f': 'force',
-    'r': 'reverse'
+    'r': 'reverse',
   });
 
   t.truthy(result.value === 'some text here');

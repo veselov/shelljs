@@ -16,7 +16,7 @@ test.before(t => {
 var trail = [
   path.resolve(path.resolve(), 'resources/pushd/a'),
   path.resolve(path.resolve(), 'resources/pushd'),
-  path.resolve()
+  path.resolve(),
 ];
 
 test('No Test Title #91', t => {

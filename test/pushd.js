@@ -24,7 +24,7 @@ test('Push valid directories', t => {
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -35,7 +35,7 @@ test('No Test Title #67', t => {
   t.deepEqual(trail, [
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -47,7 +47,7 @@ test('No Test Title #68', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -60,7 +60,7 @@ test('No Test Title #69', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -73,7 +73,7 @@ test('Push stuff around with positive indices', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -86,7 +86,7 @@ test('No Test Title #70', t => {
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
     rootDir,
-    path.resolve(rootDir, 'resources/pushd/b/c')
+    path.resolve(rootDir, 'resources/pushd/b/c'),
   ]);
 });
 
@@ -99,7 +99,7 @@ test('No Test Title #71', t => {
     rootDir,
     path.resolve(rootDir, 'resources/pushd/b/c'),
     path.resolve(rootDir, 'resources/pushd/b'),
-    path.resolve(rootDir, 'resources/pushd/a')
+    path.resolve(rootDir, 'resources/pushd/a'),
   ]);
 });
 
@@ -112,7 +112,7 @@ test('No Test Title #72', t => {
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
     rootDir,
-    path.resolve(rootDir, 'resources/pushd/b/c')
+    path.resolve(rootDir, 'resources/pushd/b/c'),
   ]);
 });
 
@@ -125,7 +125,7 @@ test('No Test Title #73', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -138,7 +138,7 @@ test('Push stuff around with negative indices', t => {
     path.resolve(rootDir, 'resources/pushd/b/c'),
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
-    path.resolve(rootDir, 'resources/pushd')
+    path.resolve(rootDir, 'resources/pushd'),
   ]);
 });
 
@@ -151,7 +151,7 @@ test('No Test Title #74', t => {
     path.resolve(rootDir, 'resources/pushd'),
     rootDir,
     path.resolve(rootDir, 'resources/pushd/b/c'),
-    path.resolve(rootDir, 'resources/pushd/b')
+    path.resolve(rootDir, 'resources/pushd/b'),
   ]);
 });
 
@@ -164,7 +164,7 @@ test('No Test Title #75', t => {
     path.resolve(rootDir, 'resources/pushd/b/c'),
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
-    path.resolve(rootDir, 'resources/pushd')
+    path.resolve(rootDir, 'resources/pushd'),
   ]);
 });
 
@@ -177,7 +177,7 @@ test('No Test Title #76', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -190,7 +190,7 @@ test('No Test Title #77', t => {
     path.resolve(rootDir, 'resources/pushd/b'),
     path.resolve(rootDir, 'resources/pushd/a'),
     path.resolve(rootDir, 'resources/pushd'),
-    rootDir
+    rootDir,
   ]);
 });
 
@@ -201,7 +201,7 @@ test('Push without changing directory or resolving paths', t => {
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
     rootDir,
-    'resources/pushd'
+    'resources/pushd',
   ]);
 });
 
@@ -212,7 +212,7 @@ test('No Test Title #78', t => {
   t.deepEqual(trail, [
     rootDir,
     'resources/pushd/a',
-    'resources/pushd'
+    'resources/pushd',
   ]);
 });
 
@@ -269,6 +269,6 @@ test('No Test Title #79', t => {
 });
 
 test('Push without arguments invalid when stack is empty', t => {
-  reset();shell.pushd();
+  reset(); shell.pushd();
   t.is(shell.error(), 'pushd: no other directory');
 });
