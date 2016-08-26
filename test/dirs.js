@@ -16,6 +16,12 @@ test.before(t => {
 // Valids
 //
 
+var trail = [
+  path.resolve(root, 'resources/pushd/a'),
+  path.resolve(root, 'resources/pushd'),
+  root
+];
+
 test('No Test Title #91', t => {
   t.deepEqual(shell.dirs(), trail);
 });
@@ -31,5 +37,5 @@ test('Single items', t => {
 
 test('Clearing items', t => {
   t.deepEqual(shell.dirs('-c'), []);
-  assert(!shell.error());
+  t.truthy(!shell.error());
 });

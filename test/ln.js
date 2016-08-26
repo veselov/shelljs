@@ -4,29 +4,25 @@ import common from '../src/common';
 import fs from 'fs';
 import path from 'path';
 
-test.before(t => {
+// On Windows, symlinks for files need admin permissions. This helper
+// skips certain tests if we are on Windows and got an EPERM error
+function skipOnWinForEPERM(action, test) {
+  action();
+  var error = shell.error();
+
   var isWindows = common.platform === 'win';
-
-  shell.config.silent = true;
-
-  // On Windows, symlinks for files need admin permissions. This helper
-  // skips certain tests if we are on Windows and got an EPERM error
-  function skipOnWinForEPERM(action, test) {
-    action();
-    var error = shell.error();
-
-    if (isWindows && error && /EPERM:/.test(error)) {
-      console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
-    } else {
-      test();
-    }
+  if (isWindows && error && /EPERM:/.test(error)) {
+    console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
+  } else {
+    test();
   }
+}
 
+test.before(t => {
+  shell.config.silent = true;
   shell.rm('-rf', 'tmp');
-  shell.mkdir('tmp');
-
   // Prepare tmp/
-  shell.cp('resources/*', 'tmp');
+  shell.cp('-r', 'resources/', 'tmp/');
 });
 
 
@@ -88,7 +84,7 @@ test('No Test Title #20', t => {
 
 test('No Test Title #21', t => {
   var result = shell.ln('tmp/file1', 'tmp/linkfile1');
-  assert(common.existsSync('tmp/linkfile1'));
+  t.truthy(common.existsSync('tmp/linkfile1'));
   t.is(
     fs.readFileSync('tmp/file1').toString(),
     fs.readFileSync('tmp/linkfile1').toString()
@@ -101,7 +97,7 @@ test('No Test Title #21', t => {
 test('With glob', t => {
   shell.rm('tmp/linkfile1');
   var result = shell.ln('tmp/fi*1', 'tmp/linkfile1');
-  assert(common.existsSync('tmp/linkfile1'));
+  t.truthy(common.existsSync('tmp/linkfile1'));
   t.is(
     fs.readFileSync('tmp/file1').toString(),
     fs.readFileSync('tmp/linkfile1').toString()
@@ -113,7 +109,7 @@ test('With glob', t => {
 
 test('No Test Title #22', t => {
   skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'file2', 'tmp/linkfile2'), function () {
-    assert(common.existsSync('tmp/linkfile2'));
+    t.truthy(common.existsSync('tmp/linkfile2'));
     t.is(
       fs.readFileSync('tmp/file2').toString(),
       fs.readFileSync('tmp/linkfile2').toString()
@@ -127,8 +123,8 @@ test('Symbolic link directory test', t => {
   shell.mkdir('tmp/ln');
   shell.touch('tmp/ln/hello');
   var result = shell.ln('-s', 'ln', 'tmp/dir1');
-  assert(common.existsSync('tmp/ln/hello'));
-  assert(common.existsSync('tmp/dir1/hello'));
+  t.truthy(common.existsSync('tmp/ln/hello'));
+  t.truthy(common.existsSync('tmp/dir1/hello'));
   t.is(result.code, 0);
 });
 
@@ -137,8 +133,8 @@ test('To current directory', t => {
   var result = shell.ln('-s', './', 'dest');
   t.is(result.code, 0);
   shell.touch('testfile.txt');
-  assert(common.existsSync('testfile.txt'));
-  assert(common.existsSync('dest/testfile.txt'));
+  t.truthy(common.existsSync('testfile.txt'));
+  t.truthy(common.existsSync('dest/testfile.txt'));
   shell.rm('-f', 'dest');
   shell.mkdir('dir1');
   shell.cd('dir1');
@@ -146,17 +142,17 @@ test('To current directory', t => {
   t.is(result.code, 0);
   shell.touch('insideDir.txt');
   shell.cd('..');
-  assert(common.existsSync('testfile.txt'));
-  assert(common.existsSync('dest/testfile.txt'));
-  assert(common.existsSync('dir1/insideDir.txt'));
-  assert(!common.existsSync('dest/insideDir.txt'));
+  t.truthy(common.existsSync('testfile.txt'));
+  t.truthy(common.existsSync('dest/testfile.txt'));
+  t.truthy(common.existsSync('dir1/insideDir.txt'));
+  t.truthy(!common.existsSync('dest/insideDir.txt'));
   shell.cd('..');
 });
 
 test('No Test Title #23', t => {
   var result = shell.ln('-f', 'tmp/file1.js', 'tmp/file2.js');
   t.is(result.code, 0);
-  assert(common.existsSync('tmp/file2.js'));
+  t.truthy(common.existsSync('tmp/file2.js'));
   t.is(
     fs.readFileSync('tmp/file1.js').toString(),
     fs.readFileSync('tmp/file2.js').toString()
@@ -167,7 +163,7 @@ test('No Test Title #23', t => {
 
 test('No Test Title #24', t => {
   skipOnWinForEPERM(shell.ln.bind(shell, '-sf', 'file1.txt', 'tmp/file2.txt'), function () {
-    assert(common.existsSync('tmp/file2.txt'));
+    t.truthy(common.existsSync('tmp/file2.txt'));
     t.is(
       fs.readFileSync('tmp/file1.txt').toString(),
       fs.readFileSync('tmp/file2.txt').toString()
@@ -179,7 +175,7 @@ test('No Test Title #24', t => {
 
 test('Abspath regression', t => {
   skipOnWinForEPERM(shell.ln.bind(shell, '-sf', 'file1', path.resolve('tmp/abspath')), function () {
-    assert(common.existsSync('tmp/abspath'));
+    t.truthy(common.existsSync('tmp/abspath'));
     t.is(
       fs.readFileSync('tmp/file1').toString(),
       fs.readFileSync('tmp/abspath').toString()
@@ -195,7 +191,7 @@ test('Relative regression', t => {
       // Move the symlink first, as the reverse confuses `mv`.
     shell.mv('tmp/file2.txt', 'tmp/new/file2.txt');
     shell.mv('tmp/file1.txt', 'tmp/new/file1.txt');
-    assert(common.existsSync('tmp/new/file2.txt'));
+    t.truthy(common.existsSync('tmp/new/file2.txt'));
     t.is(
       fs.readFileSync('tmp/new/file1.txt').toString(),
       fs.readFileSync('tmp/new/file2.txt').toString()
