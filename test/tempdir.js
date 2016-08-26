@@ -1,19 +1,21 @@
-var shell = require('..');
-var common = require('../src/common');
+import test from 'ava';
+import shell from '..';
+import common from '../src/common';
 
-var assert = require('assert');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+});
 
-shell.rm('-rf', 'tmp');
-shell.mkdir('tmp');
 
 //
 // Valids
 //
 
-var tmp = shell.tempdir();
-assert.equal(shell.error(), null);
-assert.equal(common.existsSync(tmp), true);
-
-shell.exit(123);
+test('No Test Title #19', t => {
+  var tmp = shell.tempdir();
+  t.is(shell.error(), null);
+  t.is(common.existsSync(tmp), true);
+});

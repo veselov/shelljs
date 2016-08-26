@@ -1,73 +1,84 @@
-var shell = require('..');
-var common = require('../src/common');
+import test from 'ava';
+import shell from '..';
+import common from '../src/common';
 
-var assert = require('assert');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+});
 
-shell.rm('-rf', 'tmp');
-shell.mkdir('tmp');
-
-var result;
 
 //
 // Invalids
 //
 
-result = shell.uniq();
-assert.ok(shell.error());
-assert.ok(result.code);
+test('No Test Title #45', t => {
+             var result = shell.uniq();
+             t.truthy(shell.error());
+             t.truthy(result.code);
+});
 
-assert.equal(common.existsSync('/asdfasdf'), false); // sanity check
-result = shell.sort('/adsfasdf'); // file does not exist
-assert.ok(shell.error());
-assert.ok(result.code);
+test('No Test Title #46', t => {
+             t.is(common.existsSync('/asdfasdf'), false); // sanity check
+             var result = shell.sort('/adsfasdf'); // file does not exist
+             t.truthy(shell.error());
+             t.truthy(result.code);
+});
 
 //
 // Valids
 //
 
-// uniq file1
-result = shell.uniq('resources/uniq/file1');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file1u').toString());
+test('uniq file1', t => {
+             var result = shell.uniq('resources/uniq/file1');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file1u').toString());
+});
 
-// uniq -i file2
-result = shell.uniq('-i', 'resources/uniq/file2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file2u').toString());
+test('uniq -i file2', t => {
+             var result = shell.uniq('-i', 'resources/uniq/file2');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file2u').toString());
+});
 
-// with glob character
-result = shell.uniq('-i', 'resources/uniq/fi?e2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file2u').toString());
+test('with glob character', t => {
+             var result = shell.uniq('-i', 'resources/uniq/fi?e2');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file2u').toString());
+});
 
-// uniq file1 file2
-shell.uniq('resources/uniq/file1', 'resources/uniq/file1t');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(shell.cat('resources/uniq/file1u').toString(),
-             shell.cat('resources/uniq/file1t').toString());
+test('uniq file1 file2', t => {
+             shell.uniq('resources/uniq/file1', 'resources/uniq/file1t');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(
+                          shell.cat('resources/uniq/file1u').toString(),
+                          shell.cat('resources/uniq/file1t').toString()
+             );
+});
 
-// cat file1 |uniq
-result = shell.cat('resources/uniq/file1').uniq();
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file1u').toString());
+test('cat file1 |uniq', t => {
+             var result = shell.cat('resources/uniq/file1').uniq();
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file1u').toString());
+});
 
-// uniq -c file1
-result = shell.uniq('-c', 'resources/uniq/file1');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file1c').toString());
+test('uniq -c file1', t => {
+             var result = shell.uniq('-c', 'resources/uniq/file1');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file1c').toString());
+});
 
-// uniq -d file1
-result = shell.uniq('-d', 'resources/uniq/file1');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/uniq/file1d').toString());
-
-shell.exit(123);
+test('uniq -d file1', t => {
+             var result = shell.uniq('-d', 'resources/uniq/file1');
+             t.is(shell.error(), null);
+             t.is(result.code, 0);
+             t.is(result + '', shell.cat('resources/uniq/file1d').toString());
+});

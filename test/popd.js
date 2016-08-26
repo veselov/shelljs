@@ -1,118 +1,141 @@
-var shell = require('..');
+import test from 'ava';
+import shell from '..';
+import path from 'path';
 
-var assert = require('assert');
-var path = require('path');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  var root = path.resolve();
 
-var root = path.resolve();
-var trail;
+  function reset() {
+    shell.dirs('-c');
+    shell.cd(root);
+  }
+});
 
-function reset() {
-  shell.dirs('-c');
-  shell.cd(root);
-}
 
 //
 // Valids
 //
 
-shell.pushd('resources/pushd');
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [root]);
+test('No Test Title #54', t => {
+  shell.pushd('resources/pushd');
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [root]);
+});
 
-shell.pushd('resources/pushd');
-shell.pushd('a');
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [
-  path.resolve(root, 'resources/pushd'),
-  root
-]);
+test('No Test Title #55', t => {
+  shell.pushd('resources/pushd');
+  shell.pushd('a');
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [
+    path.resolve(root, 'resources/pushd'),
+    root
+  ]);
+});
 
-shell.pushd('b');
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [
-  path.resolve(root, 'resources/pushd'),
-  root
-]);
+test('No Test Title #56', t => {
+  shell.pushd('b');
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [
+    path.resolve(root, 'resources/pushd'),
+    root
+  ]);
+});
 
-shell.pushd('b');
-shell.pushd('c');
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [
-  path.resolve(root, 'resources/pushd/b'),
-  path.resolve(root, 'resources/pushd'),
-  root
-]);
+test('No Test Title #57', t => {
+  shell.pushd('b');
+  shell.pushd('c');
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [
+    path.resolve(root, 'resources/pushd/b'),
+    path.resolve(root, 'resources/pushd'),
+    root
+  ]);
+});
 
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [
-  path.resolve(root, 'resources/pushd'),
-  root
-]);
+test('No Test Title #58', t => {
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [
+    path.resolve(root, 'resources/pushd'),
+    root
+  ]);
+});
 
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(trail.length, 1);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [root]);
+test('No Test Title #59', t => {
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(trail.length, 1);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [root]);
+});
 
-// Valid by index
-shell.pushd('resources/pushd');
-trail = shell.popd('+0');
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [root]);
+test('Valid by index', t => {
+  shell.pushd('resources/pushd');
+  var trail = shell.popd('+0');
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [root]);
+});
 
-shell.pushd('resources/pushd');
-trail = shell.popd('+1');
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+test('No Test Title #60', t => {
+  shell.pushd('resources/pushd');
+  var trail = shell.popd('+1');
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+});
 
-reset(); shell.pushd('resources/pushd');
-trail = shell.popd('-0');
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+test('No Test Title #61', t => {
+  reset();shell.pushd('resources/pushd');
+  var trail = shell.popd('-0');
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+});
 
-reset(); shell.pushd('resources/pushd');
-trail = shell.popd('-1');
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [root]);
+test('No Test Title #62', t => {
+  reset();shell.pushd('resources/pushd');
+  var trail = shell.popd('-1');
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [root]);
+});
 
+test('No Test Title #63', t => {
+  reset();shell.pushd('resources/pushd');
+  var trail = shell.popd('-n');
+  t.is(shell.error(), null);
+  t.is(process.cwd(), trail[0]);
+  t.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+});
 
-reset(); shell.pushd('resources/pushd');
-trail = shell.popd('-n');
-assert.equal(shell.error(), null);
-assert.equal(process.cwd(), trail[0]);
-assert.deepEqual(trail, [path.resolve(root, 'resources/pushd')]);
+test('Invalid', t => {
+  var trail = shell.popd();
+  t.truthy(shell.error('popd: directory stack empty\n'));
+});
 
-// Invalid
-trail = shell.popd();
-assert.ok(shell.error('popd: directory stack empty\n'));
+test('Test that the root dir is not stored', t => {
+  shell.cd('resources/pushd');
+  shell.pushd('b');
+  var trail = shell.popd();
+  t.is(shell.error(), null);
+  t.is(trail[0], path.resolve(root, 'resources/pushd'));
+  t.is(process.cwd(), trail[0]);
+  shell.popd();
+  t.truthy(shell.error(), null);
+});
 
-// Test that the root dir is not stored
-shell.cd('resources/pushd');
-shell.pushd('b');
-trail = shell.popd();
-assert.equal(shell.error(), null);
-assert.equal(trail[0], path.resolve(root, 'resources/pushd'));
-assert.equal(process.cwd(), trail[0]);
-shell.popd();
-assert.ok(shell.error(), null);
-
-shell.cd(root);
-
-shell.exit(123);
+test('No Test Title #64', t => {
+  shell.cd(root);
+});

@@ -1,91 +1,105 @@
-var shell = require('..');
+import test from 'ava';
+import shell from '..';
+import path from 'path';
+import common from '../src/common';
 
-var assert = require('assert');
-var path = require('path');
-var common = require('../src/common');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+});
 
-// save current dir
-var cur = shell.pwd();
-
-shell.rm('-rf', 'tmp');
-shell.mkdir('tmp');
 
 //
 // Invalids
 //
 
-assert.equal(common.existsSync('/asdfasdf'), false); // sanity check
-var result = shell.cd('/asdfasdf'); // dir does not exist
-assert.ok(shell.error());
-assert.equal(result.code, 1);
-assert.equal(result.stderr, 'cd: no such file or directory: /asdfasdf');
+test('No Test Title #5', t => {
+  t.is(common.existsSync('/asdfasdf'), false);
+  var result = shell.cd('/asdfasdf'); // dir does not exist
+  t.truthy(shell.error());
+  t.is(result.code, 1);
+  t.is(result.stderr, 'cd: no such file or directory: /asdfasdf');
+});
 
-assert.equal(common.existsSync('resources/file1'), true); // sanity check
-result = shell.cd('resources/file1'); // file, not dir
-assert.ok(shell.error());
-assert.equal(result.code, 1);
-assert.equal(result.stderr, 'cd: not a directory: resources/file1');
+test('No Test Title #6', t => {
+  t.is(common.existsSync('resources/file1'), true); // sanity check
+  var result = shell.cd('resources/file1'); // file, not dir
+  t.truthy(shell.error());
+  t.is(result.code, 1);
+  t.is(result.stderr, 'cd: not a directory: resources/file1');
+});
 
-result = shell.cd('-'); // Haven't changed yet, so there is no previous directory
-assert.ok(shell.error());
-assert.equal(result.code, 1);
-assert.equal(result.stderr, 'cd: could not find previous directory');
+test('No Test Title #7', t => {
+  var result = shell.cd('-'); // Haven't changed yet, so there is no previous directory
+  t.truthy(shell.error());
+  t.is(result.code, 1);
+  t.is(result.stderr, 'cd: could not find previous directory');
+});
 
 //
 // Valids
 //
 
-result = shell.cd(cur);
-result = shell.cd('tmp');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(path.basename(process.cwd()), 'tmp');
+test('No Test Title #8', t => {
+  var result = shell.cd(cur);
+  var result = shell.cd('tmp');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  t.is(path.basename(process.cwd()), 'tmp');
+});
 
-result = shell.cd(cur);
-result = shell.cd('/');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(process.cwd(), path.resolve('/'));
+test('No Test Title #9', t => {
+  var result = shell.cd(cur);
+  var result = shell.cd('/');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  t.is(process.cwd(), path.resolve('/'));
+});
 
-result = shell.cd(cur);
-result = shell.cd('/');
-result = shell.cd('-');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(process.cwd(), path.resolve(cur.toString()));
+test('No Test Title #10', t => {
+  var result = shell.cd(cur);
+  var result = shell.cd('/');
+  var result = shell.cd('-');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  t.is(process.cwd(), path.resolve(cur.toString()));
 
-// cd + other commands
+  // @@TEST(cd + other commands)
 
-result = shell.cd(cur);
-result = shell.rm('-f', 'tmp/*');
-assert.equal(common.existsSync('tmp/file1'), false);
-result = shell.cd('resources');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-result = shell.cp('file1', '../tmp');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-result = shell.cd('../tmp');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(common.existsSync('file1'), true);
+  // No Test Title #11
+  var result = shell.cd(cur);
 
-// Test tilde expansion
+  var result = shell.rm('-f', 'tmp/*');
+  t.is(common.existsSync('tmp/file1'), false);
+  var result = shell.cd('resources');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  var result = shell.cp('file1', '../tmp');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  var result = shell.cd('../tmp');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  t.is(common.existsSync('file1'), true);
 
-result = shell.cd('~');
-assert.equal(process.cwd(), common.getUserHome());
-result = shell.cd('..');
-assert.notEqual(process.cwd(), common.getUserHome());
-result = shell.cd('~'); // Change back to home
-assert.equal(process.cwd(), common.getUserHome());
+  // @@TEST(Test tilde expansion)
 
-// Goes to home directory if no arguments are passed
-result = shell.cd(cur);
-result = shell.cd();
-assert.ok(!shell.error());
-assert.equal(result.code, 0);
-assert.equal(process.cwd(), common.getUserHome());
+  // No Test Title #12
+  var result = shell.cd('~');
 
-shell.exit(123);
+  t.is(process.cwd(), common.getUserHome());
+  var result = shell.cd('..');
+  t.not(process.cwd(), common.getUserHome());
+  var result = shell.cd('~'); // Change back to home
+  t.is(process.cwd(), common.getUserHome());
+});
+
+test('Goes to home directory if no arguments are passed', t => {
+  var result = shell.cd(cur);
+  var result = shell.cd();
+  t.truthy(!shell.error());
+  t.is(result.code, 0);
+  t.is(process.cwd(), common.getUserHome());
+});

@@ -1,38 +1,35 @@
-// FIXME: This will need some work to run in AVA.
-var shell = require('..');
+import test from 'ava';
+import shell from '..';
+import path from 'path';
 
-var assert = require('assert');
-var path = require('path');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  var root = path.resolve();
 
-var root = path.resolve();
+  shell.pushd('resources/pushd');
+  shell.pushd('a');
+});
 
-shell.pushd('resources/pushd');
-shell.pushd('a');
-
-var trail = [
-  path.resolve(root, 'resources/pushd/a'),
-  path.resolve(root, 'resources/pushd'),
-  root
-];
 
 //
 // Valids
 //
 
-assert.deepEqual(shell.dirs(), trail);
+test('No Test Title #91', t => {
+  t.deepEqual(shell.dirs(), trail);
+});
 
-// Single items
-assert.equal(shell.dirs('+0'), trail[0]);
-assert.equal(shell.dirs('+1'), trail[1]);
-assert.equal(shell.dirs('+2'), trail[2]);
-assert.equal(shell.dirs('-0'), trail[2]);
-assert.equal(shell.dirs('-1'), trail[1]);
-assert.equal(shell.dirs('-2'), trail[0]);
+test('Single items', t => {
+  t.is(shell.dirs('+0'), trail[0]);
+  t.is(shell.dirs('+1'), trail[1]);
+  t.is(shell.dirs('+2'), trail[2]);
+  t.is(shell.dirs('-0'), trail[2]);
+  t.is(shell.dirs('-1'), trail[1]);
+  t.is(shell.dirs('-2'), trail[0]);
+});
 
-// Clearing items
-assert.deepEqual(shell.dirs('-c'), []);
-assert(!shell.error());
-
-shell.exit(123);
+test('Clearing items', t => {
+  t.deepEqual(shell.dirs('-c'), []);
+  assert(!shell.error());
+});

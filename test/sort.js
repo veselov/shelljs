@@ -1,94 +1,96 @@
-var shell = require('..');
-var common = require('../src/common');
+import test from 'ava';
+import shell from '..';
+import common from '../src/common';
 
-var assert = require('assert');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+});
 
-shell.rm('-rf', 'tmp');
-shell.mkdir('tmp');
-
-var result;
-
-var doubleSorted = shell.cat('resources/sort/sorted')
-                        .trimRight()
-                        .split('\n')
-                        .reduce(function (prev, cur) {
-                          return prev.concat([cur, cur]);
-                        }, [])
-                        .join('\n') + '\n';
 
 //
 // Invalids
 //
 
-result = shell.sort();
-assert.ok(shell.error());
-assert.ok(result.code);
+test('No Test Title #21', t => {
+                          var result = shell.sort();
+                          t.truthy(shell.error());
+                          t.truthy(result.code);
+});
 
-assert.equal(common.existsSync('/asdfasdf'), false); // sanity check
-result = shell.sort('/adsfasdf'); // file does not exist
-assert.ok(shell.error());
-assert.ok(result.code);
+test('No Test Title #22', t => {
+                          t.is(common.existsSync('/asdfasdf'), false); // sanity check
+                          var result = shell.sort('/adsfasdf'); // file does not exist
+                          t.truthy(shell.error());
+                          t.truthy(result.code);
+});
 
 //
 // Valids
 //
 
-// simple
-result = shell.sort('resources/sort/file1');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/sort/sorted'));
+test('simple', t => {
+                          var result = shell.sort('resources/sort/file1');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', shell.cat('resources/sort/sorted'));
+});
 
-// simple
-result = shell.sort('resources/sort/file2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/sort/sorted'));
+test('simple', t => {
+                          var result = shell.sort('resources/sort/file2');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', shell.cat('resources/sort/sorted'));
+});
 
-// multiple files
-result = shell.sort('resources/sort/file2', 'resources/sort/file1');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', doubleSorted);
+test('multiple files', t => {
+                          var result = shell.sort('resources/sort/file2', 'resources/sort/file1');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', doubleSorted);
+});
 
-// multiple files, array syntax
-result = shell.sort(['resources/sort/file2', 'resources/sort/file1']);
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', doubleSorted);
+test('multiple files, array syntax', t => {
+                          var result = shell.sort(['resources/sort/file2', 'resources/sort/file1']);
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', doubleSorted);
+});
 
-// Globbed file
-result = shell.sort('resources/sort/file?');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', doubleSorted);
+test('Globbed file', t => {
+                          var result = shell.sort('resources/sort/file?');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', doubleSorted);
+});
 
-// With '-n' option
-result = shell.sort('-n', 'resources/sort/file2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/sort/sortedDashN'));
+test('With \'-n\' option', t => {
+                          var result = shell.sort('-n', 'resources/sort/file2');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', shell.cat('resources/sort/sortedDashN'));
+});
 
-// With '-r' option
-result = shell.sort('-r', 'resources/sort/file2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/sort/sorted')
-                          .trimRight()
-                          .split('\n')
-                          .reverse()
-                          .join('\n') + '\n');
+test('With \'-r\' option', t => {
+                          var result = shell.sort('-r', 'resources/sort/file2');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', shell.cat('resources/sort/sorted')
+                                                    .trimRight()
+                                                    .split('\n')
+                                                    .reverse()
+                                                    .join('\n') + '\n');
+});
 
-// With '-rn' option
-result = shell.sort('-rn', 'resources/sort/file2');
-assert.equal(shell.error(), null);
-assert.equal(result.code, 0);
-assert.equal(result + '', shell.cat('resources/sort/sortedDashN')
-                          .trimRight()
-                          .split('\n')
-                          .reverse()
-                          .join('\n') + '\n');
-
-shell.exit(123);
+test('With \'-rn\' option', t => {
+                          var result = shell.sort('-rn', 'resources/sort/file2');
+                          t.is(shell.error(), null);
+                          t.is(result.code, 0);
+                          t.is(result + '', shell.cat('resources/sort/sortedDashN')
+                                                    .trimRight()
+                                                    .split('\n')
+                                                    .reverse()
+                                                    .join('\n') + '\n');
+});

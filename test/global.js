@@ -1,40 +1,45 @@
 /* globals cat, config, cp, env, error, exit, mkdir, rm */
+import test from 'ava';
+import common from '../src/common';
 
-require('../global');
-var common = require('../src/common');
+import '../global';
 
-var assert = require('assert');
+test.before(t => {
+  config.silent = true;
 
-config.silent = true;
+  rm('-rf', 'tmp');
+  mkdir('tmp');
+});
 
-rm('-rf', 'tmp');
-mkdir('tmp');
 
 //
 // Valids
 //
 
-assert.equal(process.env, env);
+test('No Test Title #81', t => {
+  t.is(process.env, env);
+});
 
-// cat
-var result = cat('resources/cat/file1');
-assert.equal(error(), null);
-assert.equal(result.code, 0);
-assert.equal(result, 'test1\n');
+test('cat', t => {
+  var result = cat('resources/cat/file1');
+  t.is(error(), null);
+  t.is(result.code, 0);
+  t.is(result.toString(), 'test1\n');
+});
 
-// rm
-cp('-f', 'resources/file1', 'tmp/file1');
-assert.equal(common.existsSync('tmp/file1'), true);
-result = rm('tmp/file1');
-assert.equal(error(), null);
-assert.equal(result.code, 0);
-assert.equal(common.existsSync('tmp/file1'), false);
+test('rm', t => {
+  cp('-f', 'resources/file1', 'tmp/file1');
+  t.is(common.existsSync('tmp/file1'), true);
+  var result = rm('tmp/file1');
+  t.is(error(), null);
+  t.is(result.code, 0);
+  t.is(common.existsSync('tmp/file1'), false);
+});
 
-// String.prototype is modified for global require
-'foo'.to('tmp/testfile.txt');
-assert.equal('foo', cat('tmp/testfile.txt'));
-'bar'.toEnd('tmp/testfile.txt');
-assert.equal('foobar', cat('tmp/testfile.txt'));
-
-exit(123);
+test('String.prototype is modified for global require', t => {
+  'foo'.to('tmp/testfile.txt');
+  t.is('foo', cat('tmp/testfile.txt'));
+  'bar'.toEnd('tmp/testfile.txt');
+  t.is('foobar', cat('tmp/testfile.txt'));
+});
 

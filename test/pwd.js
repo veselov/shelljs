@@ -1,28 +1,32 @@
-var shell = require('..');
+import test from 'ava';
+import shell from '..';
+import path from 'path';
 
-var assert = require('assert');
-var path = require('path');
+test.before(t => {
+  shell.config.silent = true;
 
-shell.config.silent = true;
+  shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+});
 
-shell.rm('-rf', 'tmp');
-shell.mkdir('tmp');
 
 //
 // Valids
 //
 
-var _pwd = shell.pwd();
-assert.equal(shell.error(), null);
-assert.equal(_pwd.code, 0);
-assert.ok(!_pwd.stderr);
-assert.equal(_pwd, path.resolve('.'));
+test('No Test Title #81', t => {
+  var _pwd = shell.pwd();
+  t.is(shell.error(), null);
+  t.is(_pwd.code, 0);
+  t.truthy(!_pwd.stderr);
+  t.is(_pwd, path.resolve('.'));
+});
 
-shell.cd('tmp');
-_pwd = shell.pwd();
-assert.equal(_pwd.code, 0);
-assert.ok(!_pwd.stderr);
-assert.equal(shell.error(), null);
-assert.equal(path.basename(_pwd.toString()), 'tmp');
-
-shell.exit(123);
+test('No Test Title #82', t => {
+  shell.cd('tmp');
+  var _pwd = shell.pwd();
+  t.is(_pwd.code, 0);
+  t.truthy(!_pwd.stderr);
+  t.is(shell.error(), null);
+  t.is(path.basename(_pwd.toString()), 'tmp');
+});
