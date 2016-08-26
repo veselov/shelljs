@@ -37,8 +37,8 @@ test('rm', t => {
 
 test('String.prototype is modified for global require', t => {
   'foo'.to('tmp/testfile.txt');
-  t.is('foo', cat('tmp/testfile.txt'));
+  t.is('foo', cat('tmp/testfile.txt').toString());
   'bar'.toEnd('tmp/testfile.txt');
-  t.is('foobar', cat('tmp/testfile.txt'));
+  t.is('foobar', cat('tmp/testfile.txt').toString());
 });
 

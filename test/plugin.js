@@ -117,6 +117,6 @@ test('Cannot overwrite an existing command by default', t => {
   var oldCat = shell.cat;
   t.throws(function () {
     plugin.register('cat', fooImplementation);
-  }, 'Error: unable to overwrite `cat` command');
+  }, 'unable to overwrite `cat` command');
   t.is(shell.cat, oldCat);
 });
