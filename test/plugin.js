@@ -29,6 +29,10 @@ function fooImplementation(options, arg) {
   return 'hello world';
 }
 
+//
+// Valids
+//
+
 // All plugin utils exist
 assert.equal(typeof plugin.error, 'function');
 assert.equal(typeof plugin.parseOptions, 'function');

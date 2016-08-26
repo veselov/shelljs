@@ -13,7 +13,10 @@ function reset() {
   shell.cd(root);
 }
 
-// Valid
+//
+// Valids
+//
+
 shell.pushd('resources/pushd');
 trail = shell.popd();
 assert.equal(shell.error(), null);

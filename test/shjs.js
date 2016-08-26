@@ -9,6 +9,10 @@ function runScript(name) {
   return shell.exec(cmd + ' ' + script, { silent: true });
 }
 
+//
+// Valids
+//
+
 // Exit Codes
 assert.equal(runScript('exit-codes.js').code, 42, 'exit code works');
 assert.equal(runScript('exit-0.js').code, 0, 'exiting 0 works');

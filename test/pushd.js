@@ -13,6 +13,10 @@ function reset() {
   shell.cd(root);
 }
 
+//
+// Valids
+//
+
 // Push valid directories
 trail = shell.pushd('resources/pushd');
 assert.equal(shell.error(), null);

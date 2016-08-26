@@ -1,3 +1,4 @@
+// FIXME: This will need some work to run in AVA.
 var shell = require('..');
 
 var assert = require('assert');
@@ -15,6 +16,10 @@ var trail = [
   path.resolve(root, 'resources/pushd'),
   root
 ];
+
+//
+// Valids
+//
 
 assert.deepEqual(shell.dirs(), trail);
 
