@@ -2,15 +2,15 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
+var root = path.resolve();
+
+function reset() {
+  shell.dirs('-c');
+  shell.cd(root);
+}
+
 test.before(t => {
   shell.config.silent = true;
-
-  var root = path.resolve();
-
-  function reset() {
-    shell.dirs('-c');
-    shell.cd(root);
-  }
 });
 
 
@@ -217,12 +217,13 @@ test('No Test Title #78', t => {
 });
 
 test('Push invalid directory', t => {
+  var oldCwd = process.cwd();
   shell.pushd('does/not/exist');
   t.is(
     shell.error(),
     'pushd: no such file or directory: ' + path.resolve('.', 'does/not/exist')
   );
-  t.is(process.cwd(), trail[0]);
+  t.is(process.cwd(), oldCwd);
 });
 
 test(

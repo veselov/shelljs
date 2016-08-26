@@ -14,10 +14,14 @@ test.before(t => {
 // Valids
 //
 
+var file;
+
+test.beforeEach(t => {
+  file = 'tmp/tempscript' + Math.random() + '.js';
+});
+
 test('simple test with defaults', t => {
-  var file = 'tmp/tempscript' + Math.random() + '.js';
   var script = 'require(\'../../global.js\'); echo("-asdf", "111");'; // test '-' bug (see issue #20)
-  shell.ShellString(script).to(file);
   child.exec(JSON.stringify(process.execPath) + ' ' + file, function (err, stdout, stderr) {
     t.is(stdout, '-asdf 111\n');
   });

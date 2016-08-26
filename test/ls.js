@@ -386,9 +386,9 @@ test('long option, directory', t => {
   t.is(shell.error(), null);
   t.is(result.code, 0);
   var idx = -1;
-  for (k = 0; k < result.length; k++) {
+  for (var k = 0; k < result.length; k++) {
     if (result[k].name === 'file1') {
-      var idx = k;
+      idx = k;
       break;
     }
   }
@@ -412,15 +412,15 @@ test('long option, directory, recursive (and windows converts slashes)', t => {
   t.is(shell.error(), null);
   t.is(result.code, 0);
   var idx = -1;
-  for (k = 0; k < result.length; k++) {
+  for (var k = 0; k < result.length; k++) {
     if (result[k].name === 'a_dir/b_dir') {
-      var idx = k;
+      idx = k;
       break;
     }
   }
   t.is(result.length, 9);
   t.truthy(idx >= 0);
-  var result = result[idx];
+  result = result[idx];
   t.is(result.name, result.name);
   t.truthy(fs.statSync('resources/ls/a_dir/b_dir').isDirectory());
   t.truthy(typeof result.nlink === 'number'); // This can vary between the local machine and travis
@@ -459,7 +459,7 @@ test('Test new ShellString-like attributes', t => {
   t.truthy(result.to);
   t.truthy(result.toEnd);
   result.to('tmp/testingToOutput.txt');
-  t.is(shell.cat('tmp/testingToOutput.txt'), result.stdout);
+  t.is(shell.cat('tmp/testingToOutput.txt').toString(), result.stdout);
   shell.rm('tmp/testingToOutput.txt');
 });
 

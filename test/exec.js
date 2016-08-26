@@ -23,24 +23,12 @@ test('No Test Title #73', t => {
   t.truthy(result.code > 0);
 });
 
-test(
-  'Test \'fatal\' mode for exec, temporarily overriding process.exit',
-  t => {
-    var oldFatal = shell.config.fatal;
-  }
-);
-
-test('No Test Title #74', t => {
-  shell.config.fatal = true;
-});
-
 test('No Test Title #75', t => {
+  var oldFatal = shell.config.fatal;
+  shell.config.fatal = true;
   t.throws(function () {
     shell.exec('asdfasdf'); // could not find command
   }, /exec: internal error/);
-});
-
-test('No Test Title #76', t => {
   shell.config.fatal = oldFatal;
 });
 

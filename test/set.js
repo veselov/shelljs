@@ -1,12 +1,17 @@
 import test from 'ava';
 import shell from '..';
 
+var oldConfigSilent;
+
 test.before(t => {
+  oldConfigSilent = shell.config.silent;
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
 });
 
+var nodeVersion = process.versions.node.split('.').map(function (str) { return parseInt(str, 10); });
+var uncaughtErrorExitCode = (nodeVersion[0] === 0 && nodeVersion[1] < 11) ? 8 : 1;
 
 //
 // Valids
@@ -36,11 +41,9 @@ test('default behavior', t => {
 
 test('set -e', t => {
   var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-e\'); ls(\'file_doesnt_exist\'); echo(1234);"');
-  var nodeVersion = process.versions.node.split('.').map(function (str) { return parseInt(str, 10); });
-  var uncaughtErrorExitCode = (nodeVersion[0] === 0 && nodeVersion[1] < 11) ? 8 : 1;
   t.is(result.code, uncaughtErrorExitCode);
   t.is(result.stdout, '');
-  assert(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
+  t.truthy(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
 });
 
 test('set -v', t => {
@@ -57,8 +60,8 @@ test('set -ev', t => {
   var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-ev\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, uncaughtErrorExitCode);
   t.is(result.stdout, '');
-  assert(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
-  assert(result.stderr.indexOf('ls file_doesnt_exist\n') >= 0);
+  t.truthy(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
+  t.truthy(result.stderr.indexOf('ls file_doesnt_exist\n') >= 0);
   t.is(result.stderr.indexOf('echo 1234\n'), -1);
 });
 

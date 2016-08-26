@@ -3,27 +3,23 @@ import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
 
-test.before(t => {
-  var numLines = require('./utils/utils').numLines;
+var numLines = require('./utils/utils').numLines;
 
-  shell.config.silent = true;
-
+// On Windows, symlinks for files need admin permissions. This helper
+// skips certain tests if we are on Windows and got an EPERM error
+function skipOnWinForEPERM(action, test) {
+  action();
+  var error = shell.error();
   var isWindows = common.platform === 'win';
-
-  // On Windows, symlinks for files need admin permissions. This helper
-  // skips certain tests if we are on Windows and got an EPERM error
-  function skipOnWinForEPERM(action, test) {
-    action();
-    var error = shell.error();
-
-    if (isWindows && error && /EPERM:/.test(error)) {
-      console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
-    } else {
-      test();
-    }
+  if (isWindows && error && /EPERM:/.test(error)) {
+    console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
+  } else {
+    test();
   }
+}
 
-
+test.before(t => {
+  shell.config.silent = true;
   shell.rm('-rf', 'tmp');
   shell.mkdir('tmp');
 });

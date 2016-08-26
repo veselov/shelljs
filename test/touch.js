@@ -4,6 +4,22 @@ import common from '../src/common';
 import fs from 'fs';
 import crypto from 'crypto';
 
+function resetUtimes(f) {
+  var d = new Date();
+  d.setYear(2000);
+  fs.utimesSync(f, d, d);
+  return fs.statSync(f);
+}
+
+function tmpFile(noCreate) {
+  var str = crypto.randomBytes(Math.ceil(10 / 2)).toString('hex');
+  var file = 'tmp/' + str;
+  if (!noCreate) {
+    fs.closeSync(fs.openSync(file, 'a'));
+  }
+  return file;
+}
+
 test.before(t => {
   shell.config.silent = true;
   shell.rm('-rf', 'tmp');
@@ -39,7 +55,7 @@ test('exits without error when trying to touch a directory', t => {
 test('creates new files', t => {
   var testFile = tmpFile();
   var result = shell.touch(testFile);
-  assert(common.existsSync(testFile));
+  t.truthy(common.existsSync(testFile));
 });
 
 test('does not create a file if told not to', t => {
@@ -102,9 +118,9 @@ test('sets mtime', t => {
   var oldStat = resetUtimes(testFile);
   var result = shell.touch(testFile);
   t.is(result.code, 0);
-  assert(oldStat.mtime < fs.statSync(testFile).mtime);
+  t.truthy(oldStat.mtime < fs.statSync(testFile).mtime);
   // sets atime
-  assert(oldStat.atime < fs.statSync(testFile).atime);
+  t.truthy(oldStat.atime < fs.statSync(testFile).atime);
 });
 
 test('does not sets mtime if told not to', t => {
@@ -129,8 +145,8 @@ test('multiple files', t => {
   shell.rm('-f', testFile, testFile2);
   var result = shell.touch(testFile, testFile2);
   t.is(result.code, 0);
-  assert(common.existsSync(testFile));
-  assert(common.existsSync(testFile2));
+  t.truthy(common.existsSync(testFile));
+  t.truthy(common.existsSync(testFile2));
 });
 
 test('file array', t => {
@@ -139,8 +155,8 @@ test('file array', t => {
   shell.rm('-f', testFile, testFile2);
   var result = shell.touch([testFile, testFile2]);
   t.is(result.code, 0);
-  assert(common.existsSync(testFile));
-  assert(common.existsSync(testFile2));
+  t.truthy(common.existsSync(testFile));
+  t.truthy(common.existsSync(testFile2));
 });
 
 test('touching broken link creates a new file', t => {
@@ -152,24 +168,3 @@ test('touching broken link creates a new file', t => {
     shell.rm('resources/not_existed_file');
   }
 });
-
-test('No Test Title #54', t => {
-  function resetUtimes(f) {
-    var d = new Date();
-    d.setYear(2000);
-    fs.utimesSync(f, d, d);
-    return fs.statSync(f);
-  }
-});
-
-test('No Test Title #55', t => {
-  function tmpFile(noCreate) {
-    var str = crypto.randomBytes(Math.ceil(10 / 2)).toString('hex');
-    var file = 'tmp/' + str;
-    if (!noCreate) {
-      fs.closeSync(fs.openSync(file, 'a'));
-    }
-    return file;
-  }
-});
-

@@ -10,6 +10,10 @@ test.before(t => {
   shell.mkdir('tmp');
 });
 
+var cur = shell.pwd().toString();
+test.beforeEach(t => {
+  process.chdir(cur);
+});
 
 //
 // Invalids
@@ -43,7 +47,6 @@ test('No Test Title #7', t => {
 //
 
 test('No Test Title #8', t => {
-  var result = shell.cd(cur);
   var result = shell.cd('tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
@@ -51,7 +54,6 @@ test('No Test Title #8', t => {
 });
 
 test('No Test Title #9', t => {
-  var result = shell.cd(cur);
   var result = shell.cd('/');
   t.is(shell.error(), null);
   t.is(result.code, 0);
@@ -59,45 +61,38 @@ test('No Test Title #9', t => {
 });
 
 test('No Test Title #10', t => {
-  var result = shell.cd(cur);
   var result = shell.cd('/');
   var result = shell.cd('-');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(process.cwd(), path.resolve(cur.toString()));
+});
 
-  // @@TEST(cd + other commands)
-
-  // No Test Title #11
-  var result = shell.cd(cur);
-
+test('cd + other commands', t => {
   var result = shell.rm('-f', 'tmp/*');
   t.is(common.existsSync('tmp/file1'), false);
-  var result = shell.cd('resources');
+  result = shell.cd('resources');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  var result = shell.cp('file1', '../tmp');
+  result = shell.cp('file1', '../tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  var result = shell.cd('../tmp');
+  result = shell.cd('../tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('file1'), true);
+});
 
-  // @@TEST(Test tilde expansion)
-
-  // No Test Title #12
-  var result = shell.cd('~');
-
+test('Tilde expansion', t => {
+  shell.cd('~');
   t.is(process.cwd(), common.getUserHome());
-  var result = shell.cd('..');
+  shell.cd('..');
   t.not(process.cwd(), common.getUserHome());
-  var result = shell.cd('~'); // Change back to home
+  shell.cd('~'); // Change back to home
   t.is(process.cwd(), common.getUserHome());
 });
 
 test('Goes to home directory if no arguments are passed', t => {
-  var result = shell.cd(cur);
   var result = shell.cd();
   t.truthy(!shell.error());
   t.is(result.code, 0);

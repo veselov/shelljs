@@ -16,11 +16,6 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #84', t => {
-  var contents;
-  var result;
-});
-
 test('No Test Title #85', t => {
   var result = shell.rm();
   t.truthy(shell.error());
@@ -121,14 +116,14 @@ test('recursive dir removal - absolute path', t => {
 });
 
 test('wildcard', t => {
-  shell.cp('-f', 'resources/file*', 'tmp');
+  var result = shell.cp('-f', 'resources/file*', 'tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/file1'), true);
   t.is(common.existsSync('tmp/file2'), true);
   t.is(common.existsSync('tmp/file1.js'), true);
   t.is(common.existsSync('tmp/file2.js'), true);
-  var result = shell.rm('tmp/file*');
+  result = shell.rm('tmp/file*');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/file1'), false);
@@ -199,7 +194,7 @@ test('removal of a read-only file (forced)', t => {
   shell.mkdir('-p', 'tmp/readonly');
   shell.ShellString('asdf').to('tmp/readonly/file2');
   fs.chmodSync('tmp/readonly/file2', '0444'); // -r--r--r--
-  var result = shell.rm('-f', 'tmp/readonly/file2');
+  shell.rm('-f', 'tmp/readonly/file2');
   t.is(common.existsSync('tmp/readonly/file2'), false);
 });
 
@@ -208,7 +203,7 @@ test('removal of a tree containing read-only files (unforced)', t => {
   shell.ShellString('asdf').to('tmp/tree2/file1');
   shell.ShellString('asdf').to('tmp/tree2/file2');
   fs.chmodSync('tmp/tree2/file1', '0444'); // -r--r--r--
-  var result = shell.rm('-r', 'tmp/tree2');
+  shell.rm('-r', 'tmp/tree2');
   t.is(common.existsSync('tmp/tree2/file1'), true);
   t.is(common.existsSync('tmp/tree2/file2'), false);
 });
@@ -218,7 +213,7 @@ test('removal of a tree containing read-only files (forced)', t => {
   shell.ShellString('asdf').to('tmp/tree/file1');
   shell.ShellString('asdf').to('tmp/tree/file2');
   fs.chmodSync('tmp/tree/file1', '0444'); // -r--r--r--
-  var result = shell.rm('-rf', 'tmp/tree');
+  shell.rm('-rf', 'tmp/tree');
   t.is(common.existsSync('tmp/tree'), false);
 });
 
@@ -234,7 +229,7 @@ test(
     fs.chmodSync('tmp/tree3/file', '0444'); // -r--r--r--
     fs.chmodSync('tmp/tree3/subtree/file', '0444'); // -r--r--r--
     fs.chmodSync('tmp/tree3/.hidden/file', '0444'); // -r--r--r--
-    var result = shell.rm('-rf', 'tmp/tree3/*', 'tmp/tree3/.*'); // erase dir contents
+    shell.rm('-rf', 'tmp/tree3/*', 'tmp/tree3/.*'); // erase dir contents
     t.is(shell.ls('tmp/tree3').length, 0);
   }
 );
@@ -251,7 +246,7 @@ test(
     fs.chmodSync('tmp/tree4/file', '0444'); // -r--r--r--
     fs.chmodSync('tmp/tree4/subtree/file', '0444'); // -r--r--r--
     fs.chmodSync('tmp/tree4/.hidden/file', '0444'); // -r--r--r--
-    var result = shell.rm('-rf', 'tmp/tree4'); // erase dir contents
+    shell.rm('-rf', 'tmp/tree4'); // erase dir contents
     t.is(common.existsSync('tmp/tree4'), false);
   }
 );
@@ -260,7 +255,7 @@ test('remove symbolic link to a dir', t => {
   var result = shell.rm('-rf', 'tmp');
   shell.mkdir('tmp');
   shell.cp('-R', 'resources/rm', 'tmp');
-  var result = shell.rm('-f', 'tmp/rm/link_to_a_dir');
+  result = shell.rm('-f', 'tmp/rm/link_to_a_dir');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/rm/link_to_a_dir'), false);
@@ -273,7 +268,7 @@ test('remove broken symbolic link', t => {
     shell.mkdir('tmp');
     shell.cp('-R', 'resources/rm', 'tmp');
     t.truthy(shell.test('-L', 'tmp/rm/fake.lnk'));
-    var result = shell.rm('tmp/rm/fake.lnk');
+    result = shell.rm('tmp/rm/fake.lnk');
     t.is(shell.error(), null);
     t.is(result.code, 0);
     t.truthy(!shell.test('-L', 'tmp/rm/fake.lnk'));

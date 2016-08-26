@@ -19,7 +19,7 @@ test('No Test Title #81', t => {
   t.is(shell.error(), null);
   t.is(_pwd.code, 0);
   t.truthy(!_pwd.stderr);
-  t.is(_pwd, path.resolve('.'));
+  t.is(_pwd.toString(), path.resolve('.'));
 });
 
 test('No Test Title #82', t => {

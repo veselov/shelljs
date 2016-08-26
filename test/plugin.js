@@ -2,30 +2,32 @@ import test from 'ava';
 import plugin from '../plugin';
 import shell from '..';
 
+var data = 0;
+var ret;
+var fname;
+
+function fooImplementation(options, arg) {
+  // Some sort of side effect, so we know when this is called
+  if (arg) {
+    fname = arg;
+  } else {
+    fname = plugin.readFromPipe();
+  }
+
+  if (arg === 'exitWithCode5') {
+    plugin.error('Exited with code 5', 5);
+  }
+
+  if (options.flag) {
+    data = 12;
+  } else {
+    data++;
+  }
+  return 'hello world';
+}
+
 test.before(t => {
   shell.config.silent = true;
-
-  var data = 0;
-
-  function fooImplementation(options, arg) {
-    // Some sort of side effect, so we know when this is called
-    if (arg) {
-      fname = arg;
-    } else {
-      fname = plugin.readFromPipe();
-    }
-
-    if (arg === 'exitWithCode5') {
-      plugin.error('Exited with code 5', 5);
-    }
-
-    if (options.flag) {
-      data = 12;
-    } else {
-      data++;
-    }
-    return 'hello world';
-  }
 });
 
 
@@ -41,7 +43,7 @@ test('All plugin utils exist', t => {
 });
 
 test('The plugin does not exist before it\'s registered', t => {
-  t.truthy(!shell.foo);
+  t.is(!shell.foo);
 });
 
 test('Register the plugin', t => {

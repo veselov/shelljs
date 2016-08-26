@@ -2,15 +2,15 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
+var root = path.resolve();
+
+function reset() {
+  shell.dirs('-c');
+  shell.cd(root);
+}
+
 test.before(t => {
   shell.config.silent = true;
-
-  var root = path.resolve();
-
-  function reset() {
-    shell.dirs('-c');
-    shell.cd(root);
-  }
 });
 
 
