@@ -155,41 +155,36 @@ test('exec returns a ShellString', t => {
 // async
 //
 
-test('no callback', t => {
+test.cb('no callback', t => {
   var c = shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(1234)"', { async: true });
   t.is(shell.error(), null);
   t.truthy('stdout' in c, 'async exec returns child process object');
+  t.end();
+});
 
-  //
-  // callback as 2nd argument
-  //
+test.cb('callback as 2nd argument', t => {
   shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(5678);"', function (code, stdout, stderr) {
     t.is(code, 0);
-    t.truthy(stdout === '5678\n' || stdout === '5678\nundefined\n');  // 'undefined' for v0.4
-    t.truthy(stderr === '' || stderr === 'undefined\n');  // 'undefined' for v0.4
-
-  // @@TEST(No Test Title #77)
-    //
-    // callback as 3rd argument
-    //
-    shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(5566);"', { async: true }, function (code2, stdout2, stderr2) {
-      t.is(code2, 0);
-      t.truthy(stdout2 === '5566\n' || stdout2 === '5566\nundefined\n');  // 'undefined' for v0.4
-      t.truthy(stderr2 === '' || stderr2 === 'undefined\n');  // 'undefined' for v0.4
-
-  // @@TEST(No Test Title #78)
-      //
-      // callback as 3rd argument (slient:true)
-      //
-      shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(5678);"', { silent: true }, function (code3, stdout3, stderr3) {
-        t.is(code3, 0);
-        t.truthy(stdout3 === '5678\n' || stdout3 === '5678\nundefined\n');  // 'undefined' for v0.4
-        t.truthy(stderr3 === '' || stderr3 === 'undefined\n');  // 'undefined' for v0.4
-      });
-    });
+    t.truthy(stdout === '5678\n');
+    t.truthy(stderr === '');
+    t.end();
   });
 });
 
-test('No Test Title #80', t => {
-  t.is(shell.error(), null);
+test.cb('callback as end argument', t => {
+  shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(5566);"', { async: true }, function (code2, stdout2, stderr2) {
+    t.is(code2, 0);
+    t.truthy(stdout2 === '5566\n');
+    t.truthy(stderr2 === '');
+    t.end();
+  });
+});
+
+test.cb('callback as 3rd argument (silent:true)', t => {
+  shell.exec(JSON.stringify(process.execPath) + ' -e "console.log(5678);"', { silent: true }, function (code3, stdout3, stderr3) {
+    t.is(code3, 0);
+    t.truthy(stdout3 === '5678\n' || stdout3 === '5678\nundefined\n');  // 'undefined' for v0.4
+    t.truthy(stderr3 === '' || stderr3 === 'undefined\n');  // 'undefined' for v0.4
+    t.end();
+  });
 });
