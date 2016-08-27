@@ -4,8 +4,8 @@ import path from 'path';
 
 function runScript(name) {
   // prefix with 'node ' for Windows, don't prefix for OSX/Linux
-  var cmd = (process.platform === 'win32' ? JSON.stringify(process.execPath) + ' ' : '') + path.resolve(__dirname, '../bin/shjs');
-  var script = path.resolve(__dirname, 'resources', 'shjs', name);
+  const cmd = (process.platform === 'win32' ? JSON.stringify(process.execPath) + ' ' : '') + path.resolve(__dirname, '../bin/shjs');
+  const script = path.resolve(__dirname, 'resources', 'shjs', name);
   return shell.exec(cmd + ' ' + script, { silent: true });
 }
 
@@ -19,7 +19,7 @@ test('Exit Codes', t => {
 });
 
 test('Stdout/Stderr', t => {
-  var stdioRet = runScript('stdout-stderr.js');
+  const stdioRet = runScript('stdout-stderr.js');
   t.is(stdioRet.stdout, 'stdout: OK!\n', 'stdout works');
   t.is(stdioRet.stderr, 'stderr: OK!\n', 'stderr works');
 });
@@ -30,7 +30,7 @@ test('CoffeeScript', t => {
   // @@TEST(No Test Title #28)
 
   // Extension detection
-  var extDetectRet = runScript('a-file');
+  const extDetectRet = runScript('a-file');
   t.is(extDetectRet.code, 0, 'error code works');
   t.is(extDetectRet.stdout, 'OK!\n', 'stdout works');
 });

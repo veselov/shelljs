@@ -8,9 +8,9 @@ import path from 'path';
 // skips certain tests if we are on Windows and got an EPERM error
 function skipOnWinForEPERM(action, test) {
   action();
-  var error = shell.error();
+  const error = shell.error();
 
-  var isWindows = common.platform === 'win';
+  const isWindows = common.platform === 'win';
   if (isWindows && error && /EPERM:/.test(error)) {
     console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
   } else {
@@ -31,49 +31,49 @@ test.before(t => {
 //
 
 test('No Test Title #13', t => {
-  var result = shell.ln();
+  const result = shell.ln();
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #14', t => {
-  var result = shell.ln('file');
+  const result = shell.ln('file');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #15', t => {
-  var result = shell.ln('-f');
+  const result = shell.ln('-f');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #16', t => {
-  var result = shell.ln('tmp/file1', 'tmp/file2');
+  const result = shell.ln('tmp/file1', 'tmp/file2');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #17', t => {
-  var result = shell.ln('tmp/noexist', 'tmp/linkfile1');
+  const result = shell.ln('tmp/noexist', 'tmp/linkfile1');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #18', t => {
-  var result = shell.ln('-sf', 'no/exist', 'tmp/badlink');
+  const result = shell.ln('-sf', 'no/exist', 'tmp/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #19', t => {
-  var result = shell.ln('-sf', 'noexist', 'tmp/badlink');
+  const result = shell.ln('-sf', 'noexist', 'tmp/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
 test('No Test Title #20', t => {
-  var result = shell.ln('-f', 'noexist', 'tmp/badlink');
+  const result = shell.ln('-f', 'noexist', 'tmp/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
@@ -83,7 +83,7 @@ test('No Test Title #20', t => {
 //
 
 test('No Test Title #21', t => {
-  var result = shell.ln('tmp/file1', 'tmp/linkfile1');
+  const result = shell.ln('tmp/file1', 'tmp/linkfile1');
   t.truthy(common.existsSync('tmp/linkfile1'));
   t.is(
     fs.readFileSync('tmp/file1').toString(),
@@ -96,7 +96,7 @@ test('No Test Title #21', t => {
 
 test('With glob', t => {
   shell.rm('tmp/linkfile1');
-  var result = shell.ln('tmp/fi*1', 'tmp/linkfile1');
+  const result = shell.ln('tmp/fi*1', 'tmp/linkfile1');
   t.truthy(common.existsSync('tmp/linkfile1'));
   t.is(
     fs.readFileSync('tmp/file1').toString(),
@@ -122,7 +122,7 @@ test('No Test Title #22', t => {
 test('Symbolic link directory test', t => {
   shell.mkdir('tmp/ln');
   shell.touch('tmp/ln/hello');
-  var result = shell.ln('-s', 'ln', 'tmp/dir1');
+  const result = shell.ln('-s', 'ln', 'tmp/dir1');
   t.truthy(common.existsSync('tmp/ln/hello'));
   t.truthy(common.existsSync('tmp/dir1/hello'));
   t.is(result.code, 0);
@@ -130,7 +130,7 @@ test('Symbolic link directory test', t => {
 
 test('To current directory', t => {
   shell.cd('tmp');
-  var result = shell.ln('-s', './', 'dest');
+  let result = shell.ln('-s', './', 'dest');
   t.is(result.code, 0);
   shell.touch('testfile.txt');
   t.truthy(common.existsSync('testfile.txt'));
@@ -138,7 +138,7 @@ test('To current directory', t => {
   shell.rm('-f', 'dest');
   shell.mkdir('dir1');
   shell.cd('dir1');
-  var result = shell.ln('-s', './', '../dest');
+  result = shell.ln('-s', './', '../dest');
   t.is(result.code, 0);
   shell.touch('insideDir.txt');
   shell.cd('..');
@@ -150,7 +150,7 @@ test('To current directory', t => {
 });
 
 test('No Test Title #23', t => {
-  var result = shell.ln('-f', 'tmp/file1.js', 'tmp/file2.js');
+  const result = shell.ln('-f', 'tmp/file1.js', 'tmp/file2.js');
   t.is(result.code, 0);
   t.truthy(common.existsSync('tmp/file2.js'));
   t.is(

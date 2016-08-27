@@ -17,28 +17,28 @@ test.before(t => {
 //
 
 test('No Test Title #85', t => {
-  var result = shell.rm();
+  const result = shell.rm();
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'rm: no paths given');
 });
 
 test('No Test Title #86', t => {
-  var result = shell.rm('asdfasdf'); // file does not exist
+  const result = shell.rm('asdfasdf'); // file does not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'rm: no such file or directory: asdfasdf');
 });
 
 test('No Test Title #87', t => {
-  var result = shell.rm('-f'); // no file
+  const result = shell.rm('-f'); // no file
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'rm: no paths given');
 });
 
 test('No Test Title #88', t => {
-  var result = shell.rm('-@', 'resources/file1'); // invalid option
+  const result = shell.rm('-@', 'resources/file1'); // invalid option
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(common.existsSync('resources/file1'), true);
@@ -50,31 +50,31 @@ test('No Test Title #88', t => {
 //
 
 test('file does not exist, but -f specified', t => {
-  var result = shell.rm('-f', 'asdfasdf');
+  const result = shell.rm('-f', 'asdfasdf');
   t.is(shell.error(), null);
   t.is(result.code, 0);
 });
 
 test('directory does not exist, but -fr specified', t => {
-  var result = shell.rm('-fr', 'fake_dir/');
+  const result = shell.rm('-fr', 'fake_dir/');
   t.is(shell.error(), null);
   t.is(result.code, 0);
 });
 
 test('directory does not exist, but *only -f* specified', t => {
-  var result = shell.rm('-f', 'fake_dir/');
+  const result = shell.rm('-f', 'fake_dir/');
   t.is(shell.error(), null);
   t.is(result.code, 0);
 });
 
 test('file (in fake dir) does not exist, but -f specified', t => {
-  var result = shell.rm('-f', 'fake_dir/asdfasdf');
+  const result = shell.rm('-f', 'fake_dir/asdfasdf');
   t.is(shell.error(), null);
   t.is(result.code, 0);
 });
 
 test('dir (in fake dir) does not exist, but -fr specified', t => {
-  var result = shell.rm('-fr', 'fake_dir/sub/');
+  const result = shell.rm('-fr', 'fake_dir/sub/');
   t.is(shell.error(), null);
   t.is(result.code, 0);
 });
@@ -82,7 +82,7 @@ test('dir (in fake dir) does not exist, but -fr specified', t => {
 test('simple rm', t => {
   shell.cp('-f', 'resources/file1', 'tmp/file1');
   t.is(common.existsSync('tmp/file1'), true);
-  var result = shell.rm('tmp/file1');
+  const result = shell.rm('tmp/file1');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/file1'), false);
@@ -91,7 +91,7 @@ test('simple rm', t => {
 test('recursive dir removal - small-caps \'-r\'', t => {
   shell.mkdir('-p', 'tmp/a/b/c');
   t.is(common.existsSync('tmp/a/b/c'), true);
-  var result = shell.rm('-rf', 'tmp/a');
+  const result = shell.rm('-rf', 'tmp/a');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/a'), false);
@@ -100,7 +100,7 @@ test('recursive dir removal - small-caps \'-r\'', t => {
 test('recursive dir removal - capital \'-R\'', t => {
   shell.mkdir('-p', 'tmp/a/b/c');
   t.is(common.existsSync('tmp/a/b/c'), true);
-  var result = shell.rm('-Rf', 'tmp/a');
+  const result = shell.rm('-Rf', 'tmp/a');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/a'), false);
@@ -109,14 +109,14 @@ test('recursive dir removal - capital \'-R\'', t => {
 test('recursive dir removal - absolute path', t => {
   shell.mkdir('-p', 'tmp/a/b/c');
   t.is(common.existsSync('tmp/a/b/c'), true);
-  var result = shell.rm('-Rf', path.resolve('./tmp/a'));
+  const result = shell.rm('-Rf', path.resolve('./tmp/a'));
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/a'), false);
 });
 
 test('wildcard', t => {
-  var result = shell.cp('-f', 'resources/file*', 'tmp');
+  let result = shell.cp('-f', 'resources/file*', 'tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/file1'), true);
@@ -141,10 +141,10 @@ test('recursive dir removal', t => {
   t.is(common.existsSync('tmp/b'), true);
   t.is(common.existsSync('tmp/c'), true);
   t.is(common.existsSync('tmp/.hidden'), true);
-  var result = shell.rm('-rf', 'tmp/*');
+  const result = shell.rm('-rf', 'tmp/*');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  var contents = fs.readdirSync('tmp');
+  const contents = fs.readdirSync('tmp');
   t.is(contents.length, 1);
   t.is(contents[0], '.hidden'); // shouldn't remove hiddden if no .* given
 });
@@ -158,10 +158,10 @@ test('recursive dir removal', t => {
   t.is(common.existsSync('tmp/b'), true);
   t.is(common.existsSync('tmp/c'), true);
   t.is(common.existsSync('tmp/.hidden'), true);
-  var result = shell.rm('-rf', 'tmp/*', 'tmp/.*');
+  const result = shell.rm('-rf', 'tmp/*', 'tmp/.*');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  var contents = fs.readdirSync('tmp');
+  const contents = fs.readdirSync('tmp');
   t.is(contents.length, 0);
 });
 
@@ -174,10 +174,10 @@ test('recursive dir removal - array-syntax', t => {
   t.is(common.existsSync('tmp/b'), true);
   t.is(common.existsSync('tmp/c'), true);
   t.is(common.existsSync('tmp/.hidden'), true);
-  var result = shell.rm('-rf', ['tmp/*', 'tmp/.*']);
+  const result = shell.rm('-rf', ['tmp/*', 'tmp/.*']);
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  var contents = fs.readdirSync('tmp');
+  const contents = fs.readdirSync('tmp');
   t.is(contents.length, 0);
 });
 
@@ -185,7 +185,7 @@ test('removal of a read-only file (unforced)', t => {
   shell.mkdir('-p', 'tmp/readonly');
   shell.ShellString('asdf').to('tmp/readonly/file1');
   fs.chmodSync('tmp/readonly/file1', '0444'); // -r--r--r--
-  var result = shell.rm('tmp/readonly/file1');
+  shell.rm('tmp/readonly/file1');
   t.is(common.existsSync('tmp/readonly/file1'), true); // bash's rm always asks before removing read-only files
   // here we just assume "no"
 });
@@ -252,7 +252,7 @@ test(
 );
 
 test('remove symbolic link to a dir', t => {
-  var result = shell.rm('-rf', 'tmp');
+  let result = shell.rm('-rf', 'tmp');
   shell.mkdir('tmp');
   shell.cp('-R', 'resources/rm', 'tmp');
   result = shell.rm('-f', 'tmp/rm/link_to_a_dir');
@@ -264,7 +264,7 @@ test('remove symbolic link to a dir', t => {
 
 test('remove broken symbolic link', t => {
   if (process.platform !== 'win32') {
-    var result = shell.rm('-rf', 'tmp');
+    let result = shell.rm('-rf', 'tmp');
     shell.mkdir('tmp');
     shell.cp('-R', 'resources/rm', 'tmp');
     t.truthy(shell.test('-L', 'tmp/rm/fake.lnk'));

@@ -15,7 +15,7 @@ test.before(t => {
 //
 
 test('Normal strings don\'t have \'.toEnd()\' anymore', t => {
-  var str = 'hello world';
+  const str = 'hello world';
   t.truthy(typeof str.toEnd === 'undefined');
 });
 
@@ -34,7 +34,7 @@ test('No Test Title #25', t => {
 //
 
 test('No Test Title #26', t => {
-  var result;
+  let result;
   t.is(common.existsSync('tmp/toEnd1'), false); // Check file toEnd() creates does not already exist
   t.is(common.existsSync('tmp/toEnd2'), false);
   shell.ShellString('hello ').toEnd('tmp/toEnd1');
@@ -56,7 +56,7 @@ test('With a glob', t => {
     false,
     'globs are not interpreted literally'
   );
-  var result = shell.cat('tmp/toEnd1');
+  const result = shell.cat('tmp/toEnd1');
   t.is(shell.error(), null);
   t.is(result.toString(), 'goodbye');
 });

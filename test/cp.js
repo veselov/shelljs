@@ -3,18 +3,18 @@ import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
 
-var numLines = require('./utils/utils').numLines;
+const numLines = require('./utils/utils').numLines;
 
 // On Windows, symlinks for files need admin permissions. This helper
 // skips certain tests if we are on Windows and got an EPERM error
-function skipOnWinForEPERM(action, test) {
+function skipOnWinForEPERM(action, testCase) {
   action();
-  var error = shell.error();
-  var isWindows = common.platform === 'win';
+  const error = shell.error();
+  const isWindows = common.platform === 'win';
   if (isWindows && error && /EPERM:/.test(error)) {
     console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
   } else {
-    test();
+    testCase();
   }
 }
 
@@ -30,21 +30,21 @@ test.before(t => {
 //
 
 test('No Test Title #31', t => {
-  var result = shell.cp();
+  const result = shell.cp();
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
 });
 
 test('No Test Title #32', t => {
-  var result = shell.cp('file1');
+  const result = shell.cp('file1');
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
 });
 
 test('No Test Title #33', t => {
-  var result = shell.cp('-f');
+  const result = shell.cp('-f');
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
@@ -52,7 +52,7 @@ test('No Test Title #33', t => {
 
 test('No Test Title #34', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-@', 'resources/file1', 'tmp/file1'); // option not supported, files OK
+  const result = shell.cp('-@', 'resources/file1', 'tmp/file1'); // option not supported, files OK
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(common.existsSync('tmp/file1'), false);
@@ -60,7 +60,7 @@ test('No Test Title #34', t => {
 });
 
 test('No Test Title #35', t => {
-  var result = shell.cp('-Z', 'asdfasdf', 'tmp/file2'); // option not supported, files NOT OK
+  const result = shell.cp('-Z', 'asdfasdf', 'tmp/file2'); // option not supported, files NOT OK
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(common.existsSync('tmp/file2'), false);
@@ -68,7 +68,7 @@ test('No Test Title #35', t => {
 });
 
 test('No Test Title #36', t => {
-  var result = shell.cp('asdfasdf', 'tmp'); // source does not exist
+  const result = shell.cp('asdfasdf', 'tmp'); // source does not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(numLines(result.stderr), 1);
@@ -77,7 +77,7 @@ test('No Test Title #36', t => {
 });
 
 test('No Test Title #37', t => {
-  var result = shell.cp('asdfasdf1', 'asdfasdf2', 'tmp'); // sources do not exist
+  const result = shell.cp('asdfasdf1', 'asdfasdf2', 'tmp'); // sources do not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(numLines(result.stderr), 2);
@@ -90,14 +90,14 @@ test('No Test Title #37', t => {
 });
 
 test('No Test Title #38', t => {
-  var result = shell.cp('asdfasdf1', 'asdfasdf2', 'resources/file1'); // too many sources (dest is file)
+  const result = shell.cp('asdfasdf1', 'asdfasdf2', 'resources/file1'); // too many sources (dest is file)
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: dest is not a directory (too many sources)');
 });
 
 test('No Test Title #39', t => {
-  var result = shell.cp('resources/file1', 'resources/file2', 'tmp/a_file'); // too many sources
+  const result = shell.cp('resources/file1', 'resources/file2', 'tmp/a_file'); // too many sources
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(common.existsSync('tmp/a_file'), false);
@@ -109,8 +109,8 @@ test('No Test Title #39', t => {
 //
 
 test('No Test Title #40', t => {
-  var oldContents = shell.cat('resources/file2').toString();
-  var result = shell.cp('-n', 'resources/file1', 'resources/file2'); // dest already exists
+  const oldContents = shell.cat('resources/file2').toString();
+  const result = shell.cp('-n', 'resources/file1', 'resources/file2'); // dest already exists
   t.truthy(!shell.error());
   t.is(result.code, 0);
   t.is(result.stderr, '');
@@ -118,8 +118,8 @@ test('No Test Title #40', t => {
 });
 
 test('-f by default', t => {
-  var result = shell.cp('resources/file2', 'resources/copyfile2');
-  var result = shell.cp('resources/file1', 'resources/file2'); // dest already exists
+  shell.cp('resources/file2', 'resources/copyfile2');
+  const result = shell.cp('resources/file1', 'resources/file2'); // dest already exists
   t.truthy(!shell.error());
   t.is(result.code, 0);
   t.truthy(!result.stderr);
@@ -129,8 +129,8 @@ test('-f by default', t => {
 });
 
 test('-f (explicitly)', t => {
-  var result = shell.cp('resources/file2', 'resources/copyfile2');
-  var result = shell.cp('-f', 'resources/file1', 'resources/file2'); // dest already exists
+  shell.cp('resources/file2', 'resources/copyfile2');
+  const result = shell.cp('-f', 'resources/file1', 'resources/file2'); // dest already exists
   t.truthy(!shell.error());
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -141,7 +141,7 @@ test('-f (explicitly)', t => {
 });
 
 test('simple - to dir', t => {
-  var result = shell.cp('resources/file1', 'tmp');
+  const result = shell.cp('resources/file1', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -149,7 +149,7 @@ test('simple - to dir', t => {
 });
 
 test('simple - to file', t => {
-  var result = shell.cp('resources/file2', 'tmp/file2');
+  const result = shell.cp('resources/file2', 'tmp/file2');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -158,7 +158,7 @@ test('simple - to file', t => {
 
 test('simple - file list', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('resources/file1', 'resources/file2', 'tmp');
+  const result = shell.cp('resources/file1', 'resources/file2', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -168,7 +168,7 @@ test('simple - file list', t => {
 
 test('simple - file list, array syntax', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp(['resources/file1', 'resources/file2'], 'tmp');
+  const result = shell.cp(['resources/file1', 'resources/file2'], 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -177,9 +177,9 @@ test('simple - file list, array syntax', t => {
 });
 
 test('No Test Title #41', t => {
-  var result = shell.cp('resources/file2', 'tmp/file3');
+  shell.cp('resources/file2', 'tmp/file3');
   t.is(common.existsSync('tmp/file3'), true);
-  var result = shell.cp('-f', 'resources/file2', 'tmp/file3'); // file exists, but -f specified
+  const result = shell.cp('-f', 'resources/file2', 'tmp/file3'); // file exists, but -f specified
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -188,7 +188,7 @@ test('No Test Title #41', t => {
 
 test('glob', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('resources/file?', 'tmp');
+  const result = shell.cp('resources/file?', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -202,7 +202,7 @@ test('glob', t => {
 
 test('wildcard', t => {
   shell.rm('tmp/file1', 'tmp/file2');
-  var result = shell.cp('resources/file*', 'tmp');
+  const result = shell.cp('resources/file*', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -216,7 +216,7 @@ test('wildcard', t => {
 
 test('recursive, with regular files', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-R', 'resources/file1', 'resources/file2', 'tmp');
+  const result = shell.cp('-R', 'resources/file1', 'resources/file2', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -226,7 +226,7 @@ test('recursive, with regular files', t => {
 
 test('recursive, nothing exists', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-R', 'resources/cp', 'tmp');
+  const result = shell.cp('-R', 'resources/cp', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -237,7 +237,7 @@ test(
   'recursive, nothing exists, source ends in \'/\' (see Github issue #15)',
   t => {
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-R', 'resources/cp/', 'tmp/');
+    const result = shell.cp('-R', 'resources/cp/', 'tmp/');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -249,7 +249,7 @@ test(
   'recursive, globbing regular files with extension (see Github issue #376)',
   t => {
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-R', 'resources/file*.txt', 'tmp');
+    const result = shell.cp('-R', 'resources/file*.txt', 'tmp');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -262,7 +262,7 @@ test(
   'recursive, copying one regular file (also related to Github issue #376)',
   t => {
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-R', 'resources/file1.txt', 'tmp');
+    const result = shell.cp('-R', 'resources/file1.txt', 'tmp');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -273,8 +273,8 @@ test(
 
 test('recursive, everything exists, no force flag', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-R', 'resources/cp', 'tmp');
-  var result = shell.cp('-R', 'resources/cp', 'tmp');
+  shell.cp('-R', 'resources/cp', 'tmp');
+  const result = shell.cp('-R', 'resources/cp', 'tmp');
   t.is(shell.error(), null); // crash test only
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -292,7 +292,7 @@ test('No Test Title #42', t => {
       shell.cat('tmp/links/sym.lnk').toString(),
       shell.cat('tmp/fakeLinks/sym.lnk').toString()
     );
-    var result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
+    let result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -314,7 +314,7 @@ test('No Test Title #42', t => {
       shell.cat('tmp/links/sym.lnk').toString(),
       shell.cat('tmp/fakeLinks/sym.lnk').toString()
     );
-    var result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
+    result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -330,10 +330,10 @@ test('No Test Title #42', t => {
 
 test('recursive, everything exists, with force flag', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-R', 'resources/cp', 'tmp');
+  let result = shell.cp('-R', 'resources/cp', 'tmp');
   shell.ShellString('changing things around').to('tmp/cp/dir_a/z');
   t.not(shell.cat('resources/cp/dir_a/z') + '', shell.cat('tmp/cp/dir_a/z') + ''); // before cp
-  var result = shell.cp('-Rf', 'resources/cp', 'tmp');
+  result = shell.cp('-Rf', 'resources/cp', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -344,7 +344,7 @@ test(
   'recursive, creates dest dir since it\'s only one level deep (see Github issue #44)',
   t => {
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-r', 'resources/issue44', 'tmp/dir2');
+    const result = shell.cp('-r', 'resources/issue44', 'tmp/dir2');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -360,7 +360,7 @@ test(
   'recursive, does *not* create dest dir since it\'s too deep (see Github issue #44)',
   t => {
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-r', 'resources/issue44', 'tmp/dir2/dir3');
+    const result = shell.cp('-r', 'resources/issue44', 'tmp/dir2/dir3');
     t.truthy(shell.error());
     t.is(
       result.stderr,
@@ -373,7 +373,7 @@ test(
 
 test('recursive, copies entire directory', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-r', 'resources/cp/dir_a', 'tmp/dest');
+  const result = shell.cp('-r', 'resources/cp/dir_a', 'tmp/dest');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -382,7 +382,7 @@ test('recursive, copies entire directory', t => {
 
 test('recursive, with trailing slash, does the exact same', t => {
   shell.rm('-rf', 'tmp/*');
-  var result = shell.cp('-r', 'resources/cp/dir_a/', 'tmp/dest');
+  const result = shell.cp('-r', 'resources/cp/dir_a/', 'tmp/dest');
   t.is(shell.error(), null);
   t.is(common.existsSync('tmp/dest/z'), true);
 });
@@ -393,7 +393,7 @@ test(
     if (common.platform !== 'win') {
       // preserve mode bits
       shell.rm('-rf', 'tmp/*');
-      var execBit = parseInt('001', 8);
+      const execBit = parseInt('001', 8);
       t.is(fs.statSync('resources/cp-mode-bits/executable').mode & execBit, execBit);
       shell.cp('resources/cp-mode-bits/executable', 'tmp/executable');
       t.is(
@@ -406,7 +406,7 @@ test(
 
 test('Make sure hidden files are copied recursively', t => {
   shell.rm('-rf', 'tmp/');
-  var result = shell.cp('-r', 'resources/ls/', 'tmp/');
+  const result = shell.cp('-r', 'resources/ls/', 'tmp/');
   t.truthy(!shell.error());
   t.truthy(!result.stderr);
   t.is(result.code, 0);
@@ -416,7 +416,7 @@ test('Make sure hidden files are copied recursively', t => {
 test('no-recursive will copy regular files only', t => {
   shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
-  var result = shell.cp('resources/file1.txt', 'resources/ls/', 'tmp/');
+  const result = shell.cp('resources/file1.txt', 'resources/ls/', 'tmp/');
   t.truthy(shell.error());
   t.truthy(!common.existsSync('tmp/.hidden_file')); // doesn't copy dir contents
   t.truthy(!common.existsSync('tmp/ls')); // doesn't copy dir itself
@@ -427,7 +427,7 @@ test('no-recursive will copy regular files only', t => {
   shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
 
-  var result = shell.cp('resources/file1.txt', 'resources/file2.txt', 'resources/cp',
+  const result = shell.cp('resources/file1.txt', 'resources/file2.txt', 'resources/cp',
     'resources/ls/', 'tmp/');
 
   t.truthy(shell.error());
@@ -468,7 +468,7 @@ test('No Test Title #44', t => {
     // @@TEST(No Test Title #48)
     // Recursive, copies entire directory with no symlinks and -L option does not cause change in behavior.
     shell.rm('-rf', 'tmp/*');
-    var result = shell.cp('-rL', 'resources/cp/dir_a', 'tmp/dest');
+    const result = shell.cp('-rL', 'resources/cp/dir_a', 'tmp/dest');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -519,13 +519,12 @@ test('Test max depth.', t => {
   shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
   shell.config.maxdepth = 32;
-  var directory = '';
-  var i;
-  for (i = 1; i < 40; i++) {
+  let directory = '';
+  for (let i = 1; i < 40; i++) {
     directory += '/' + i;
   }
-  var directory32deep = '';
-  for (i = 1; i < 32; i++) {
+  let directory32deep = '';
+  for (let i = 1; i < 32; i++) {
     directory32deep += '/' + i;
   }
   shell.mkdir('-p', 'tmp/0' + directory);

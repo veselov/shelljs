@@ -20,7 +20,7 @@ test('No Test Title #81', t => {
 });
 
 test('cat', t => {
-  var result = cat('resources/cat/file1');
+  const result = cat('resources/cat/file1');
   t.is(error(), null);
   t.is(result.code, 0);
   t.is(result.toString(), 'test1\n');
@@ -29,7 +29,7 @@ test('cat', t => {
 test('rm', t => {
   cp('-f', 'resources/file1', 'tmp/file1');
   t.is(common.existsSync('tmp/file1'), true);
-  var result = rm('tmp/file1');
+  const result = rm('tmp/file1');
   t.is(error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/file1'), false);

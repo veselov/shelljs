@@ -33,24 +33,23 @@ test('piping ls() into cat() converts to a string', t => {
 });
 
 test('No Test Title #52', t => {
-  var result;
-  result = shell.ls('resources/').grep('file1');
+  const result = shell.ls('resources/').grep('file1');
   t.is(result + '', 'file1\nfile1.js\nfile1.txt\n');
 });
 
 test('No Test Title #53', t => {
-  var result = shell.ls('resources/').cat().grep('file1');
+  const result = shell.ls('resources/').cat().grep('file1');
   t.is(result + '', 'file1\nfile1.js\nfile1.txt\n');
 });
 
 test('Equivalent to a simple grep() test case', t => {
-  var result = shell.cat('resources/grep/file').grep(/alpha*beta/);
+  const result = shell.cat('resources/grep/file').grep(/alpha*beta/);
   t.is(shell.error(), null);
   t.is(result.toString(), 'alphaaaaaaabeta\nalphbeta\n');
 });
 
 test('Equivalent to a simple sed() test case', t => {
-  var result = shell.cat('resources/grep/file').sed(/l*\.js/, '');
+  const result = shell.cat('resources/grep/file').sed(/l*\.js/, '');
   t.truthy(!shell.error());
   t.is(
     result.toString(),
@@ -59,7 +58,7 @@ test('Equivalent to a simple sed() test case', t => {
 });
 
 test('Sort a file by frequency of each line', t => {
-  var result = shell.sort('resources/uniq/pipe').uniq('-c').sort('-n');
+  const result = shell.sort('resources/uniq/pipe').uniq('-c').sort('-n');
   t.is(shell.error(), null);
   t.is(result.toString(), shell.cat('resources/uniq/pipeSorted').toString());
 
@@ -68,7 +67,7 @@ test('Sort a file by frequency of each line', t => {
   if (process.platform !== 'win32') {
     // unix-specific
     if (shell.which('grep').stdout) {
-      var result = shell.cat('resources/grep/file').exec("grep 'alpha*beta'");
+      const result = shell.cat('resources/grep/file').exec("grep 'alpha*beta'");
       t.is(shell.error(), null);
       t.is(result.toString(), 'alphaaaaaaabeta\nalphbeta\n');
     } else {

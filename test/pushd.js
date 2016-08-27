@@ -2,7 +2,7 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
-var rootDir = path.resolve();
+const rootDir = path.resolve();
 
 function reset() {
   shell.dirs('-c');
@@ -19,7 +19,7 @@ test.before(t => {
 //
 
 test('Push valid directories', t => {
-  var trail = shell.pushd('resources/pushd');
+  const trail = shell.pushd('resources/pushd');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -29,7 +29,7 @@ test('Push valid directories', t => {
 });
 
 test('No Test Title #67', t => {
-  var trail = shell.pushd('a');
+  const trail = shell.pushd('a');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -40,7 +40,7 @@ test('No Test Title #67', t => {
 });
 
 test('No Test Title #68', t => {
-  var trail = shell.pushd('../b');
+  const trail = shell.pushd('../b');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -52,7 +52,7 @@ test('No Test Title #68', t => {
 });
 
 test('No Test Title #69', t => {
-  var trail = shell.pushd('c');
+  const trail = shell.pushd('c');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -65,7 +65,7 @@ test('No Test Title #69', t => {
 });
 
 test('Push stuff around with positive indices', t => {
-  var trail = shell.pushd('+0');
+  const trail = shell.pushd('+0');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -78,7 +78,7 @@ test('Push stuff around with positive indices', t => {
 });
 
 test('No Test Title #70', t => {
-  var trail = shell.pushd('+1');
+  const trail = shell.pushd('+1');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -91,7 +91,7 @@ test('No Test Title #70', t => {
 });
 
 test('No Test Title #71', t => {
-  var trail = shell.pushd('+2');
+  const trail = shell.pushd('+2');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -104,7 +104,7 @@ test('No Test Title #71', t => {
 });
 
 test('No Test Title #72', t => {
-  var trail = shell.pushd('+3');
+  const trail = shell.pushd('+3');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -117,7 +117,7 @@ test('No Test Title #72', t => {
 });
 
 test('No Test Title #73', t => {
-  var trail = shell.pushd('+4');
+  const trail = shell.pushd('+4');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -130,7 +130,7 @@ test('No Test Title #73', t => {
 });
 
 test('Push stuff around with negative indices', t => {
-  var trail = shell.pushd('-0');
+  const trail = shell.pushd('-0');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -143,7 +143,7 @@ test('Push stuff around with negative indices', t => {
 });
 
 test('No Test Title #74', t => {
-  var trail = shell.pushd('-1');
+  const trail = shell.pushd('-1');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -156,7 +156,7 @@ test('No Test Title #74', t => {
 });
 
 test('No Test Title #75', t => {
-  var trail = shell.pushd('-2');
+  const trail = shell.pushd('-2');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -169,7 +169,7 @@ test('No Test Title #75', t => {
 });
 
 test('No Test Title #76', t => {
-  var trail = shell.pushd('-3');
+  const trail = shell.pushd('-3');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -182,7 +182,7 @@ test('No Test Title #76', t => {
 });
 
 test('No Test Title #77', t => {
-  var trail = shell.pushd('-4');
+  const trail = shell.pushd('-4');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -196,7 +196,7 @@ test('No Test Title #77', t => {
 
 test('Push without changing directory or resolving paths', t => {
   reset();
-  var trail = shell.pushd('-n', 'resources/pushd');
+  const trail = shell.pushd('-n', 'resources/pushd');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -206,7 +206,7 @@ test('Push without changing directory or resolving paths', t => {
 });
 
 test('No Test Title #78', t => {
-  var trail = shell.pushd('-n', 'resources/pushd/a');
+  const trail = shell.pushd('-n', 'resources/pushd/a');
   t.is(shell.error(), null);
   t.is(process.cwd(), trail[0]);
   t.deepEqual(trail, [
@@ -217,7 +217,7 @@ test('No Test Title #78', t => {
 });
 
 test('Push invalid directory', t => {
-  var oldCwd = process.cwd();
+  const oldCwd = process.cwd();
   shell.pushd('does/not/exist');
   t.is(
     shell.error(),
@@ -230,13 +230,13 @@ test(
   'Push without arguments should swap top two directories when stack length is 2',
   t => {
     reset();
-    var trail = shell.pushd('resources/pushd');
+    let trail = shell.pushd('resources/pushd');
     t.is(shell.error(), null);
     t.is(trail.length, 2);
     t.is(path.relative(rootDir, trail[0]), path.join('resources', 'pushd'));
     t.is(trail[1], rootDir);
     t.is(process.cwd(), trail[0]);
-    var trail = shell.pushd();
+    trail = shell.pushd();
     t.is(shell.error(), null);
     t.is(trail.length, 2);
     t.is(trail[0], rootDir);
@@ -248,7 +248,7 @@ test(
 test(
   'Push without arguments should swap top two directories when stack length is > 2',
   t => {
-    var trail = shell.pushd('resources/pushd/a');
+    const trail = shell.pushd('resources/pushd/a');
     t.is(shell.error(), null);
     t.is(trail.length, 3);
     t.is(path.relative(rootDir, trail[0]), path.join('resources', 'pushd', 'a'));
@@ -259,7 +259,7 @@ test(
 );
 
 test('No Test Title #79', t => {
-  var trail = shell.pushd();
+  const trail = shell.pushd();
   t.is(shell.error(), null);
   t.is(trail.length, 3);
   t.is(trail[0], rootDir);

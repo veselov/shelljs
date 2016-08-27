@@ -14,7 +14,7 @@ test.before(t => {
 //
 
 test('No Test Title #83', t => {
-  var result = shell.find();
+  const result = shell.find();
   t.is(result.code, 1);
   t.truthy(shell.error());
 });
@@ -25,7 +25,7 @@ test('No Test Title #83', t => {
 
 test('current path', t => {
   shell.cd('resources/find');
-  var result = shell.find('.');
+  const result = shell.find('.');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(result.indexOf('.hidden') > -1, true);
@@ -35,7 +35,7 @@ test('current path', t => {
 });
 
 test('simple path', t => {
-  var result = shell.find('resources/find');
+  const result = shell.find('resources/find');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(result.indexOf('resources/find/.hidden') > -1, true);
@@ -44,7 +44,7 @@ test('simple path', t => {
 });
 
 test('multiple paths - comma', t => {
-  var result = shell.find('resources/find/dir1', 'resources/find/dir2');
+  const result = shell.find('resources/find/dir1', 'resources/find/dir2');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(result.indexOf('resources/find/dir1/dir11/a_dir11') > -1, true);
@@ -53,7 +53,7 @@ test('multiple paths - comma', t => {
 });
 
 test('multiple paths - array', t => {
-  var result = shell.find(['resources/find/dir1', 'resources/find/dir2']);
+  const result = shell.find(['resources/find/dir1', 'resources/find/dir2']);
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(result.indexOf('resources/find/dir1/dir11/a_dir11') > -1, true);

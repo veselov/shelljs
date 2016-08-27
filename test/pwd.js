@@ -15,7 +15,7 @@ test.before(t => {
 //
 
 test('No Test Title #81', t => {
-  var _pwd = shell.pwd();
+  const _pwd = shell.pwd();
   t.is(shell.error(), null);
   t.is(_pwd.code, 0);
   t.truthy(!_pwd.stderr);
@@ -24,7 +24,7 @@ test('No Test Title #81', t => {
 
 test('No Test Title #82', t => {
   shell.cd('tmp');
-  var _pwd = shell.pwd();
+  const _pwd = shell.pwd();
   t.is(_pwd.code, 0);
   t.truthy(!_pwd.stderr);
   t.is(shell.error(), null);

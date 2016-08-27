@@ -1,7 +1,7 @@
 import test from 'ava';
 import shell from '..';
 
-var oldConfigSilent;
+let oldConfigSilent;
 
 test.before(t => {
   oldConfigSilent = shell.config.silent;
@@ -10,16 +10,12 @@ test.before(t => {
   shell.rm('-rf', 'tmp');
 });
 
-var nodeVersion = process.versions.node.split('.').map(function (str) { return parseInt(str, 10); });
-var uncaughtErrorExitCode = (nodeVersion[0] === 0 && nodeVersion[1] < 11) ? 8 : 1;
+const nodeVersion = process.versions.node.split('.').map(function (str) { return parseInt(str, 10); });
+const uncaughtErrorExitCode = (nodeVersion[0] === 0 && nodeVersion[1] < 11) ? 8 : 1;
 
 //
 // Valids
 //
-
-test('No Test Title #12', t => {
-  var result;
-});
 
 test('initial values', t => {
   t.true(oldConfigSilent === false);
@@ -33,21 +29,21 @@ test('No Test Title #13', t => {
 });
 
 test('default behavior', t => {
-  var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); ls(\'file_doesnt_exist\'); echo(1234);"');
+  const result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, 0);
   t.is(result.stdout, '1234\n');
   t.is(result.stderr, 'ls: no such file or directory: file_doesnt_exist\n');
 });
 
 test('set -e', t => {
-  var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-e\'); ls(\'file_doesnt_exist\'); echo(1234);"');
+  const result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-e\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, uncaughtErrorExitCode);
   t.is(result.stdout, '');
   t.truthy(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
 });
 
 test('set -v', t => {
-  var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-v\'); ls(\'file_doesnt_exist\'); echo(1234);"');
+  const result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-v\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, 0);
   t.is(result.stdout, '1234\n');
   t.is(
@@ -57,7 +53,7 @@ test('set -v', t => {
 });
 
 test('set -ev', t => {
-  var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-ev\'); ls(\'file_doesnt_exist\'); echo(1234);"');
+  const result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-ev\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, uncaughtErrorExitCode);
   t.is(result.stdout, '');
   t.truthy(result.stderr.indexOf('Error: ls: no such file or directory: file_doesnt_exist') >= 0);
@@ -66,7 +62,7 @@ test('set -ev', t => {
 });
 
 test('set -e, set +e', t => {
-  var result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-e\'); set(\'+e\'); ls(\'file_doesnt_exist\'); echo(1234);"');
+  const result = shell.exec(JSON.stringify(process.execPath) + ' -e "require(\'../global\'); set(\'-e\'); set(\'+e\'); ls(\'file_doesnt_exist\'); echo(1234);"');
   t.is(result.code, 0);
   t.is(result.stdout, '1234\n');
   t.is(result.stderr, 'ls: no such file or directory: file_doesnt_exist\n');

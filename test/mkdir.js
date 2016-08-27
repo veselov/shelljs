@@ -3,7 +3,7 @@ import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
 
-var numLines = require('./utils/utils').numLines;
+const numLines = require('./utils/utils').numLines;
 
 test.before(t => {
   shell.config.silent = true;
@@ -18,15 +18,15 @@ test.before(t => {
 //
 
 test('No Test Title #30', t => {
-  var result = shell.mkdir();
+  const result = shell.mkdir();
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'mkdir: no paths given');
 });
 
 test('No Test Title #31', t => {
-  var mtime = fs.statSync('tmp').mtime.toString();
-  var result = shell.mkdir('tmp'); // dir already exists
+  const mtime = fs.statSync('tmp').mtime.toString();
+  const result = shell.mkdir('tmp'); // dir already exists
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'mkdir: path already exists: tmp');
@@ -34,8 +34,8 @@ test('No Test Title #31', t => {
 });
 
 test('Can\'t overwrite a broken link', t => {
-  var mtime = fs.lstatSync('resources/badlink').mtime.toString();
-  var result = shell.mkdir('resources/badlink');
+  const mtime = fs.lstatSync('resources/badlink').mtime.toString();
+  const result = shell.mkdir('resources/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'mkdir: path already exists: resources/badlink');
@@ -44,7 +44,7 @@ test('Can\'t overwrite a broken link', t => {
 
 test('No Test Title #32', t => {
   t.is(common.existsSync('/asdfasdf'), false); // sanity check
-  var result = shell.mkdir('/asdfasdf/foobar'); // root path does not exist
+  const result = shell.mkdir('/asdfasdf/foobar'); // root path does not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'mkdir: no such file or directory: /asdfasdf');
@@ -55,11 +55,11 @@ test('No Test Title #32', t => {
 test('Check for invalid permissions', t => {
   if (process.platform !== 'win32') {
     // This test case only works on unix, but should work on Windows as well
-    var dirName = 'nowritedir';
+    const dirName = 'nowritedir';
     shell.mkdir(dirName);
     t.truthy(!shell.error());
     shell.chmod('-w', dirName);
-    var result = shell.mkdir(dirName + '/foo');
+    const result = shell.mkdir(dirName + '/foo');
     t.is(result.code, 1);
     t.is(
       result.stderr,
@@ -77,7 +77,7 @@ test('Check for invalid permissions', t => {
 
 test('No Test Title #33', t => {
   t.is(common.existsSync('tmp/t1'), false);
-  var result = shell.mkdir('tmp/t1'); // simple dir
+  const result = shell.mkdir('tmp/t1'); // simple dir
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/t1'), true);
@@ -86,7 +86,7 @@ test('No Test Title #33', t => {
 test('No Test Title #34', t => {
   t.is(common.existsSync('tmp/t2'), false);
   t.is(common.existsSync('tmp/t3'), false);
-  var result = shell.mkdir('tmp/t2', 'tmp/t3'); // multiple dirs
+  const result = shell.mkdir('tmp/t2', 'tmp/t3'); // multiple dirs
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/t2'), true);
@@ -96,7 +96,7 @@ test('No Test Title #34', t => {
 test('No Test Title #35', t => {
   t.is(common.existsSync('tmp/t1'), true);
   t.is(common.existsSync('tmp/t4'), false);
-  var result = shell.mkdir('tmp/t1', 'tmp/t4'); // one dir exists, one doesn't
+  const result = shell.mkdir('tmp/t1', 'tmp/t4'); // one dir exists, one doesn't
   t.is(numLines(shell.error()), 1);
   t.is(common.existsSync('tmp/t1'), true);
   t.is(common.existsSync('tmp/t4'), true);
@@ -104,7 +104,7 @@ test('No Test Title #35', t => {
 
 test('No Test Title #36', t => {
   t.is(common.existsSync('tmp/a'), false);
-  var result = shell.mkdir('-p', 'tmp/a/b/c');
+  const result = shell.mkdir('-p', 'tmp/a/b/c');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/a/b/c'), true);
@@ -112,7 +112,7 @@ test('No Test Title #36', t => {
 });
 
 test('multiple dirs', t => {
-  var result = shell.mkdir('-p', 'tmp/zzza', 'tmp/zzzb', 'tmp/zzzc');
+  const result = shell.mkdir('-p', 'tmp/zzza', 'tmp/zzzb', 'tmp/zzzc');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/zzza'), true);
@@ -121,7 +121,7 @@ test('multiple dirs', t => {
 });
 
 test('multiple dirs, array syntax', t => {
-  var result = shell.mkdir('-p', ['tmp/yyya', 'tmp/yyyb', 'tmp/yyyc']);
+  const result = shell.mkdir('-p', ['tmp/yyya', 'tmp/yyyb', 'tmp/yyyc']);
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/yyya'), true);
@@ -130,11 +130,11 @@ test('multiple dirs, array syntax', t => {
 });
 
 test('globbed dir', t => {
-  var result = shell.mkdir('-p', 'tmp/mydir');
+  let result = shell.mkdir('-p', 'tmp/mydir');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/mydir'), true);
-  var result = shell.mkdir('-p', 'tmp/m*ir');
+  result = shell.mkdir('-p', 'tmp/m*ir');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(common.existsSync('tmp/mydir'), true);

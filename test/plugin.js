@@ -2,9 +2,8 @@ import test from 'ava';
 import plugin from '../plugin';
 import shell from '..';
 
-var data = 0;
-var ret;
-var fname;
+let data = 0;
+let fname;
 
 function fooImplementation(options, arg) {
   // Some sort of side effect, so we know when this is called
@@ -61,10 +60,10 @@ test('The plugin exists after registering', t => {
 });
 
 test('The command fails for invalid options', t => {
-  var ret = shell.foo('-n', 'filename');
-  t.is(ret.code, 1);
-  t.is(ret.stdout, '');
-  t.is(ret.stderr, 'foo: option not recognized: n');
+  const result = shell.foo('-n', 'filename');
+  t.is(result.code, 1);
+  t.is(result.stdout, '');
+  t.is(result.stderr, 'foo: option not recognized: n');
   t.is(shell.error(), 'foo: option not recognized: n');
 });
 
@@ -97,25 +96,25 @@ test('Plugins are also compatible with shelljs/global', t => {
 });
 
 test('Plugins can be added as methods to ShellStrings', t => {
-  var ret = shell.ShellString('hello world\n');
-  t.is(ret.toString(), 'hello world\n');
-  t.is(typeof ret.grep, 'function'); // existing methods persist
-  t.is(typeof ret.foo, 'function');
-  ret.foo();
+  const result = shell.ShellString('hello world\n');
+  t.is(result.toString(), 'hello world\n');
+  t.is(typeof result.grep, 'function'); // existing methods persist
+  t.is(typeof result.foo, 'function');
+  result.foo();
   t.is(fname, 'hello world\n'); // readFromPipe() works
 });
 
 test('Plugins can signal errors', t => {
-  var ret = shell.foo('exitWithCode5');
-  t.is(ret.code, 5);
-  t.is(ret.stdout, '');
-  t.is(ret.stderr, 'foo: Exited with code 5');
+  const result = shell.foo('exitWithCode5');
+  t.is(result.code, 5);
+  t.is(result.stdout, '');
+  t.is(result.stderr, 'foo: Exited with code 5');
   t.is(shell.error(), 'foo: Exited with code 5');
 });
 
 test('Cannot overwrite an existing command by default', t => {
-  var oldCat = shell.cat;
-  t.throws(function () {
+  const oldCat = shell.cat;
+  t.throws(() => {
     plugin.register('cat', fooImplementation);
   }, 'unable to overwrite `cat` command');
   t.is(shell.cat, oldCat);

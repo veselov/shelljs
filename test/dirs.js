@@ -13,7 +13,7 @@ test.before(t => {
 // Valids
 //
 
-var trail = [
+const trail = [
   path.resolve(path.resolve(), 'resources/pushd/a'),
   path.resolve(path.resolve(), 'resources/pushd'),
   path.resolve(),

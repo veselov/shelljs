@@ -15,7 +15,7 @@ test.before(t => {
 //
 
 test('No Test Title #19', t => {
-  var tmp = shell.tempdir();
+  const tmp = shell.tempdir();
   t.is(shell.error(), null);
   t.is(common.existsSync(tmp), true);
 });
