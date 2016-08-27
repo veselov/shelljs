@@ -25,7 +25,7 @@ function fooImplementation(options, arg) {
   return 'hello world';
 }
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 });
 
@@ -48,11 +48,12 @@ test('The plugin does not exist before it\'s registered', t => {
 test('Register the plugin', t => {
   plugin.register('foo', fooImplementation, {
     cmdOptions: {
-      'f': 'flag',
+      f: 'flag',
     },
     wrapOutput: true,
     canReceivePipe: true,
   });
+  t.pass();
 });
 
 test('The plugin exists after registering', t => {

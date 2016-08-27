@@ -4,7 +4,7 @@ import common from '../src/common';
 import path from 'path';
 import fs from 'fs';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');

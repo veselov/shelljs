@@ -2,7 +2,6 @@ import test from 'ava';
 import shell from '..';
 import child from 'child_process';
 import common from '../src/common';
-test.before(t => {});
 
 
 //

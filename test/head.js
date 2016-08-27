@@ -2,7 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');

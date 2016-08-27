@@ -3,7 +3,7 @@ import test from 'ava';
 import '../global';
 import common from '../src/common';
 
-test.before(t => {
+test.before(() => {
   config.silent = true;
 
   rm('-rf', 'tmp');

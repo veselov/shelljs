@@ -1,7 +1,7 @@
 import test from 'ava';
 import shell from '..';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -61,35 +61,29 @@ test('Sort a file by frequency of each line', t => {
   const result = shell.sort('resources/uniq/pipe').uniq('-c').sort('-n');
   t.is(shell.error(), null);
   t.is(result.toString(), shell.cat('resources/uniq/pipeSorted').toString());
+});
 
-  // Synchronous exec
-  // TODO: add windows tests
-  if (process.platform !== 'win32') {
-    // unix-specific
-    if (shell.which('grep').stdout) {
-      const result = shell.cat('resources/grep/file').exec("grep 'alpha*beta'");
-      t.is(shell.error(), null);
-      t.is(result.toString(), 'alphaaaaaaabeta\nalphbeta\n');
-    } else {
-      console.error('Warning: Cannot verify piped exec');
-    }
+// TODO: add windows tests
+test('Synchronous exec', t => {
+  if (shell.which('grep').stdout) {
+    const result = shell.cat('resources/grep/file').exec("grep 'alpha*beta'");
+    t.is(shell.error(), null);
+    t.is(result.toString(), 'alphaaaaaaabeta\nalphbeta\n');
   } else {
     console.error('Warning: Cannot verify piped exec');
   }
+});
 
-  // Async exec
-  // TODO: add windows tests
-  if (process.platform !== 'win32') {
-    // unix-specific
-    if (shell.which('grep').stdout) {
-      shell.cat('resources/grep/file').exec("grep 'alpha*beta'", function (code, stdout) {
-        t.is(code, 0);
-        t.is(stdout, 'alphaaaaaaabeta\nalphbeta\n');
-      });
-    } else {
-      console.error('Warning: Cannot verify piped exec');
-    }
+// TODO: add windows tests
+test.cb('Asynchronous exec', t => {
+  if (shell.which('grep').stdout) {
+    shell.cat('resources/grep/file').exec("grep 'alpha*beta'", function (code, stdout) {
+      t.is(code, 0);
+      t.is(stdout, 'alphaaaaaaabeta\nalphbeta\n');
+      t.end();
+    });
   } else {
     console.error('Warning: Cannot verify piped exec');
+    t.end();
   }
 });

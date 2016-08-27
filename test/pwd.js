@@ -2,7 +2,7 @@ import test from 'ava';
 import shell from '..';
 import path from 'path';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');

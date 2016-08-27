@@ -1,7 +1,7 @@
 import test from 'ava';
 import shell from '..';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');

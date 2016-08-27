@@ -4,7 +4,7 @@ import common from '../src/common';
 
 const numLines = require('./utils/utils').numLines;
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -122,6 +122,7 @@ test('No Test Title #46', t => {
 // Valids
 //
 
+// TODO(nate): refactor this to a beforeEach step
 test('No Test Title #47', t => {
   shell.cd('tmp');
 });

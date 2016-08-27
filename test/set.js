@@ -3,7 +3,7 @@ import shell from '..';
 
 let oldConfigSilent;
 
-test.before(t => {
+test.before(() => {
   oldConfigSilent = shell.config.silent;
   shell.config.silent = true;
 
@@ -24,7 +24,7 @@ test('initial values', t => {
   t.true(shell.config.noglob === false);
 });
 
-test('No Test Title #13', t => {
+test('No Test Title #13', () => {
   shell.cp('-R', 'resources/', 'tmp');
 });
 

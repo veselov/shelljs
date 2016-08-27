@@ -3,7 +3,7 @@ import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 });
 

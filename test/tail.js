@@ -2,7 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -51,18 +51,24 @@ test('multiple files', t => {
   const result = shell.tail('resources/head/file2.txt', 'resources/head/file1.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile2.slice(0, 10).reverse().concat(
-      bottomOfFile1.slice(0, 10).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile2
+      .slice(0, 10)
+      .reverse()
+      .concat(bottomOfFile1.slice(0, 10).reverse())
+      .join('\n') + '\n');
 });
 
 test('multiple files, array syntax', t => {
   const result = shell.tail(['resources/head/file2.txt', 'resources/head/file1.txt']);
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile2.slice(0, 10).reverse().concat(
-      bottomOfFile1.slice(0, 10).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile2
+      .slice(0, 10)
+      .reverse()
+      .concat(bottomOfFile1.slice(0, 10).reverse())
+      .join('\n') + '\n');
 });
 
 test('reading more lines than are in the file (no trailing newline)', t => {
@@ -83,34 +89,46 @@ test('Globbed file', t => {
   const result = shell.tail('resources/head/file?.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile1.slice(0, 10).reverse().concat(
-      bottomOfFile2.slice(0, 10).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile1
+      .slice(0, 10)
+      .reverse()
+      .concat(bottomOfFile2.slice(0, 10).reverse())
+      .join('\n') + '\n');
 });
 
 test('With `\'-n\' <num>` option', t => {
   const result = shell.tail('-n', 4, 'resources/head/file2.txt', 'resources/head/file1.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile2.slice(0, 4).reverse().concat(
-      bottomOfFile1.slice(0, 4).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile2
+      .slice(0, 4)
+      .reverse()
+      .concat(bottomOfFile1.slice(0, 4).reverse())
+      .join('\n') + '\n');
 });
 
 test('With `{\'-n\': <num>}` option', t => {
   const result = shell.tail({ '-n': 4 }, 'resources/head/file2.txt', 'resources/head/file1.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile2.slice(0, 4).reverse().concat(
-      bottomOfFile1.slice(0, 4).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile2
+      .slice(0, 4)
+      .reverse()
+      .concat(bottomOfFile1.slice(0, 4).reverse())
+      .join('\n') + '\n');
 });
 
 test('negative values are the same as positive values', t => {
   const result = shell.tail('-n', -4, 'resources/head/file2.txt', 'resources/head/file1.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);
-  t.is(result.toString(), bottomOfFile2.slice(0, 4).reverse().concat(
-      bottomOfFile1.slice(0, 4).reverse()
-  ).join('\n') + '\n');
+  t.is(result.toString(),
+    bottomOfFile2
+      .slice(0, 4)
+      .reverse()
+      .concat(bottomOfFile1.slice(0, 4).reverse())
+      .join('\n') + '\n');
 });

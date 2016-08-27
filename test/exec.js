@@ -4,7 +4,7 @@ import util from 'util';
 import path from 'path';
 import os from 'os';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 });
 
@@ -110,7 +110,7 @@ test('set timeout option', t => {
   t.is(result.code, 0);
   if (process.version >= 'v0.11') {
     // this option doesn't work on v0.10
-    const result = shell.exec(JSON.stringify(process.execPath) + ' resources/exec/slow.js 100', { timeout: 10 }); // times out
+    shell.exec(JSON.stringify(process.execPath) + ' resources/exec/slow.js 100', { timeout: 10 }); // times out
 
     t.truthy(shell.error());
   }
@@ -128,14 +128,14 @@ test('check process.env works', t => {
 
 test('set shell option (TODO: add tests for Windows)', t => {
   if (process.platform !== 'win32') {
-    const result = shell.exec('echo $0');
+    let result = shell.exec('echo $0');
     t.truthy(!shell.error());
     t.is(result.code, 0);
     t.is(result.stdout, '/bin/sh\n'); // sh by default
     const bashPath = shell.which('bash').trim();
     // this option doesn't work on v0.10
     if (bashPath && process.version >= 'v0.11') {
-      const result = shell.exec('echo $0', { shell: '/bin/bash' });
+      result = shell.exec('echo $0', { shell: '/bin/bash' });
       t.truthy(!shell.error());
       t.is(result.code, 0);
       t.is(result.stdout, '/bin/bash\n');

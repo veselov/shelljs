@@ -3,7 +3,7 @@ import shell from '..';
 import path from 'path';
 import common from '../src/common';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -11,7 +11,7 @@ test.before(t => {
 });
 
 const cur = shell.pwd().toString();
-test.beforeEach(t => {
+test.beforeEach(() => {
   process.chdir(cur);
 });
 

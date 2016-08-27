@@ -2,7 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -135,6 +135,7 @@ test('make sure * in string-regex is not globbed', t => {
   );
 });
 
+// TODO(nate): refactor this to a beforeEach step
 test('No Test Title #10', t => {
   shell.cp('-f', 'resources/file1', 'tmp/file1');
   shell.cp('-f', 'resources/file2', 'tmp/file2');

@@ -20,7 +20,7 @@ function tmpFile(noCreate) {
   return file;
 }
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
   shell.rm('-rf', 'tmp');
   shell.mkdir('tmp');
@@ -56,6 +56,7 @@ test('creates new files', t => {
   const testFile = tmpFile();
   const result = shell.touch(testFile);
   t.truthy(common.existsSync(testFile));
+  t.is(result.code, 0);
 });
 
 test('does not create a file if told not to', t => {

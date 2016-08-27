@@ -9,7 +9,7 @@ function reset() {
   shell.cd(rootDir);
 }
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 });
 

@@ -24,6 +24,7 @@ test.cb('simple test with defaults', t => {
   shell.ShellString(script).to(file);
   child.exec(JSON.stringify(process.execPath) + ' ' + file, function (err, stdout, stderr) {
     t.is(stdout, 'hello world\n');
+    t.is(stderr, '');
     t.end();
   });
 });
@@ -34,6 +35,7 @@ test.cb('allow arguments to begin with a hyphen', t => {
   shell.ShellString(script).to(file);
   child.exec(JSON.stringify(process.execPath) + ' ' + file, function (err, stdout, stderr) {
     t.is(stdout, '-asdf 111\n');
+    t.is(stderr, '');
     t.end();
   });
 });

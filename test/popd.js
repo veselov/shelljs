@@ -9,10 +9,14 @@ function reset() {
   shell.cd(rootDir);
 }
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 });
 
+
+test.after(() => {
+  shell.cd(rootDir);
+});
 
 //
 // Valids
@@ -121,7 +125,7 @@ test('No Test Title #63', t => {
 });
 
 test('Invalid', t => {
-  const trail = shell.popd();
+  shell.popd();
   t.truthy(shell.error('popd: directory stack empty\n'));
 });
 
@@ -134,8 +138,4 @@ test('Test that rootDirDir is not stored', t => {
   t.is(process.cwd(), trail[0]);
   shell.popd();
   t.truthy(shell.error(), null);
-});
-
-test('No Test Title #64', t => {
-  shell.cd(rootDir);
 });

@@ -18,7 +18,7 @@ function skipOnWinForEPERM(action, testCase) {
   }
 }
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
   shell.rm('-rf', 'tmp');
   shell.mkdir('tmp');
@@ -383,6 +383,7 @@ test('recursive, copies entire directory', t => {
 test('recursive, with trailing slash, does the exact same', t => {
   shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-r', 'resources/cp/dir_a/', 'tmp/dest');
+  t.is(result.code, 0);
   t.is(shell.error(), null);
   t.is(common.existsSync('tmp/dest/z'), true);
 });
@@ -417,6 +418,7 @@ test('no-recursive will copy regular files only', t => {
   shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
   const result = shell.cp('resources/file1.txt', 'resources/ls/', 'tmp/');
+  t.is(result.code, 1);
   t.truthy(shell.error());
   t.truthy(!common.existsSync('tmp/.hidden_file')); // doesn't copy dir contents
   t.truthy(!common.existsSync('tmp/ls')); // doesn't copy dir itself
@@ -430,6 +432,7 @@ test('no-recursive will copy regular files only', t => {
   const result = shell.cp('resources/file1.txt', 'resources/file2.txt', 'resources/cp',
     'resources/ls/', 'tmp/');
 
+  t.is(result.code, 1);
   t.truthy(shell.error());
   t.truthy(!common.existsSync('tmp/.hidden_file')); // doesn't copy dir contents
   t.truthy(!common.existsSync('tmp/ls')); // doesn't copy dir itself

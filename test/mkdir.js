@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const numLines = require('./utils/utils').numLines;
 
-test.before(t => {
+test.before(() => {
   shell.config.silent = true;
 
   shell.rm('-rf', 'tmp');
@@ -97,6 +97,7 @@ test('No Test Title #35', t => {
   t.is(common.existsSync('tmp/t1'), true);
   t.is(common.existsSync('tmp/t4'), false);
   const result = shell.mkdir('tmp/t1', 'tmp/t4'); // one dir exists, one doesn't
+  t.is(result.code, 1);
   t.is(numLines(shell.error()), 1);
   t.is(common.existsSync('tmp/t1'), true);
   t.is(common.existsSync('tmp/t4'), true);
