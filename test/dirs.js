@@ -19,7 +19,7 @@ const trail = [
   path.resolve(),
 ];
 
-test('No Test Title #91', t => {
+test('no arguments', t => {
   t.deepEqual(shell.dirs(), trail);
 });
 

@@ -19,7 +19,7 @@ test.beforeEach(t => {
 // Invalids
 //
 
-test('No Test Title #5', t => {
+test('nonexistent directory', t => {
   t.is(common.existsSync('/asdfasdf'), false);
   const result = shell.cd('/asdfasdf'); // dir does not exist
   t.truthy(shell.error());
@@ -27,7 +27,7 @@ test('No Test Title #5', t => {
   t.is(result.stderr, 'cd: no such file or directory: /asdfasdf');
 });
 
-test('No Test Title #6', t => {
+test('file not dir', t => {
   t.is(common.existsSync('resources/file1'), true); // sanity check
   const result = shell.cd('resources/file1'); // file, not dir
   t.truthy(shell.error());
@@ -35,7 +35,7 @@ test('No Test Title #6', t => {
   t.is(result.stderr, 'cd: not a directory: resources/file1');
 });
 
-test('No Test Title #7', t => {
+test('no previous dir', t => {
   const result = shell.cd('-'); // Haven't changed yet, so there is no previous directory
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -46,21 +46,21 @@ test('No Test Title #7', t => {
 // Valids
 //
 
-test('No Test Title #8', t => {
+test('relative path', t => {
   const result = shell.cd('tmp');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(path.basename(process.cwd()), 'tmp');
 });
 
-test('No Test Title #9', t => {
+test('absolute path', t => {
   const result = shell.cd('/');
   t.is(shell.error(), null);
   t.is(result.code, 0);
   t.is(process.cwd(), path.resolve('/'));
 });
 
-test('No Test Title #10', t => {
+test('previous directory (-)', t => {
   shell.cd('/');
   const result = shell.cd('-');
   t.is(shell.error(), null);

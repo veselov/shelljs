@@ -13,17 +13,17 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #72', t => {
+test('no args', t => {
   shell.exec();
   t.truthy(shell.error());
 });
 
-test('No Test Title #73', t => {
+test('unknown command', t => {
   const result = shell.exec('asdfasdf'); // could not find command
   t.truthy(result.code > 0);
 });
 
-test('No Test Title #75', t => {
+test('config.fatal and unknown command', t => {
   const oldFatal = shell.config.fatal;
   shell.config.fatal = true;
   t.throws(function () {

@@ -14,19 +14,19 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #2', t => {
+test('no args', t => {
   const result = shell.grep();
   t.truthy(shell.error());
   t.is(result.code, 2);
 });
 
-test('No Test Title #3', t => {
+test('too few args', t => {
   const result = shell.grep(/asdf/g); // too few args
   t.truthy(shell.error());
   t.is(result.code, 2);
 });
 
-test('No Test Title #4', t => {
+test('no such file', t => {
   t.is(common.existsSync('/asdfasdf'), false); // sanity check
   const result = shell.grep(/asdf/g, '/asdfasdf'); // no such file
   t.truthy(shell.error());
@@ -48,19 +48,19 @@ test('if at least one file is missing, this should be an error', t => {
 // Valids
 //
 
-test('No Test Title #5', t => {
+test('basic', t => {
   const result = shell.grep('line', 'resources/a.txt');
   t.is(shell.error(), null);
   t.is(result.split('\n').length - 1, 4);
 });
 
-test('No Test Title #6', t => {
+test('-v option', t => {
   const result = shell.grep('-v', 'line', 'resources/a.txt');
   t.is(shell.error(), null);
   t.is(result.split('\n').length - 1, 8);
 });
 
-test('No Test Title #7', t => {
+test('matches one line', t => {
   const result = shell.grep('line one', 'resources/a.txt');
   t.is(shell.error(), null);
   t.is(result.toString(), 'This is line one\n');

@@ -15,7 +15,7 @@ test.before(t => {
 // Valids
 //
 
-test('No Test Title #81', t => {
+test('env is exported', t => {
   t.is(process.env, env);
 });
 

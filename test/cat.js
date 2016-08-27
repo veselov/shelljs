@@ -14,14 +14,14 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #1', t => {
+test('no paths given', t => {
   const result = shell.cat();
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cat: no paths given');
 });
 
-test('No Test Title #2', t => {
+test('nonexistent file', t => {
   t.is(common.existsSync('/asdfasdf'), false); // sanity check
   const result = shell.cat('/asdfasdf'); // file does not exist
   t.truthy(shell.error());
@@ -54,7 +54,7 @@ test('multiple files, array syntax', t => {
   t.is(result.toString(), 'test2\ntest1\n');
 });
 
-test('No Test Title #3', t => {
+test('glob', t => {
   const result = shell.cat('resources/file*.txt');
   t.is(shell.error(), null);
   t.is(result.code, 0);

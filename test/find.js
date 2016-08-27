@@ -13,7 +13,7 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #83', t => {
+test('no args', t => {
   const result = shell.find();
   t.is(result.code, 1);
   t.truthy(shell.error());

@@ -30,19 +30,19 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #13', t => {
+test('no args', t => {
   const result = shell.ln();
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
-test('No Test Title #14', t => {
+test('too few args', t => {
   const result = shell.ln('file');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
-test('No Test Title #15', t => {
+test('only an option', t => {
   const result = shell.ln('-f');
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -54,25 +54,19 @@ test('No Test Title #16', t => {
   t.is(result.code, 1);
 });
 
-test('No Test Title #17', t => {
+test('non-existent source', t => {
   const result = shell.ln('tmp/noexist', 'tmp/linkfile1');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
-test('No Test Title #18', t => {
+test('non-existent source (-sf)', t => {
   const result = shell.ln('-sf', 'no/exist', 'tmp/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
-test('No Test Title #19', t => {
-  const result = shell.ln('-sf', 'noexist', 'tmp/badlink');
-  t.truthy(shell.error());
-  t.is(result.code, 1);
-});
-
-test('No Test Title #20', t => {
+test('non-existent source (-f)', t => {
   const result = shell.ln('-f', 'noexist', 'tmp/badlink');
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -82,7 +76,7 @@ test('No Test Title #20', t => {
 // Valids
 //
 
-test('No Test Title #21', t => {
+test('basic usage', t => {
   const result = shell.ln('tmp/file1', 'tmp/linkfile1');
   t.truthy(common.existsSync('tmp/linkfile1'));
   t.is(
@@ -107,7 +101,7 @@ test('With glob', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #22', t => {
+test('-s option', t => {
   skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'file2', 'tmp/linkfile2'), function () {
     t.truthy(common.existsSync('tmp/linkfile2'));
     t.is(
@@ -149,7 +143,7 @@ test('To current directory', t => {
   shell.cd('..');
 });
 
-test('No Test Title #23', t => {
+test('-f option', t => {
   const result = shell.ln('-f', 'tmp/file1.js', 'tmp/file2.js');
   t.is(result.code, 0);
   t.truthy(common.existsSync('tmp/file2.js'));
@@ -161,7 +155,7 @@ test('No Test Title #23', t => {
   t.is(fs.readFileSync('tmp/file2.js').toString(), 'new content js');
 });
 
-test('No Test Title #24', t => {
+test('-sf option', t => {
   skipOnWinForEPERM(shell.ln.bind(shell, '-sf', 'file1.txt', 'tmp/file2.txt'), function () {
     t.truthy(common.existsSync('tmp/file2.txt'));
     t.is(

@@ -13,11 +13,11 @@ test.before(t => {
 // Valids
 //
 
-test('No Test Title #69', t => {
+test('existing variables', t => {
   t.is(shell.env.PATH, process.env.PATH);
 });
 
-test('No Test Title #70', t => {
+test('variables are exported', t => {
   shell.env.SHELLJS_TEST = 'hello world';
   t.is(shell.env.SHELLJS_TEST, process.env.SHELLJS_TEST);
 });

@@ -29,28 +29,28 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #31', t => {
+test('no args', t => {
   const result = shell.cp();
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
 });
 
-test('No Test Title #32', t => {
+test('no destination', t => {
   const result = shell.cp('file1');
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
 });
 
-test('No Test Title #33', t => {
+test('only an option', t => {
   const result = shell.cp('-f');
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: missing <source> and/or <dest>');
 });
 
-test('No Test Title #34', t => {
+test('invalid option', t => {
   shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-@', 'resources/file1', 'tmp/file1'); // option not supported, files OK
   t.truthy(shell.error());
@@ -59,7 +59,7 @@ test('No Test Title #34', t => {
   t.is(result.stderr, 'cp: option not recognized: @');
 });
 
-test('No Test Title #35', t => {
+test('invalid option', t => {
   const result = shell.cp('-Z', 'asdfasdf', 'tmp/file2'); // option not supported, files NOT OK
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -67,7 +67,7 @@ test('No Test Title #35', t => {
   t.is(result.stderr, 'cp: option not recognized: Z');
 });
 
-test('No Test Title #36', t => {
+test('source does not exist', t => {
   const result = shell.cp('asdfasdf', 'tmp'); // source does not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -76,7 +76,7 @@ test('No Test Title #36', t => {
   t.is(result.stderr, 'cp: no such file or directory: asdfasdf');
 });
 
-test('No Test Title #37', t => {
+test('sources does not exist', t => {
   const result = shell.cp('asdfasdf1', 'asdfasdf2', 'tmp'); // sources do not exist
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -89,14 +89,14 @@ test('No Test Title #37', t => {
   );
 });
 
-test('No Test Title #38', t => {
+test('too many sources', t => {
   const result = shell.cp('asdfasdf1', 'asdfasdf2', 'resources/file1'); // too many sources (dest is file)
   t.truthy(shell.error());
   t.is(result.code, 1);
   t.is(result.stderr, 'cp: dest is not a directory (too many sources)');
 });
 
-test('No Test Title #39', t => {
+test('too many sources #2', t => {
   const result = shell.cp('resources/file1', 'resources/file2', 'tmp/a_file'); // too many sources
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -108,7 +108,7 @@ test('No Test Title #39', t => {
 // Valids
 //
 
-test('No Test Title #40', t => {
+test('dest already exists', t => {
   const oldContents = shell.cat('resources/file2').toString();
   const result = shell.cp('-n', 'resources/file1', 'resources/file2'); // dest already exists
   t.truthy(!shell.error());
@@ -176,7 +176,7 @@ test('simple - file list, array syntax', t => {
   t.is(common.existsSync('tmp/file2'), true);
 });
 
-test('No Test Title #41', t => {
+test('-f option', t => {
   shell.cp('resources/file2', 'tmp/file3');
   t.is(common.existsSync('tmp/file3'), true);
   const result = shell.cp('-f', 'resources/file2', 'tmp/file3'); // file exists, but -f specified
@@ -280,7 +280,7 @@ test('recursive, everything exists, no force flag', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #42', t => {
+test('-R implies to not follow links', t => {
   if (process.platform !== 'win32') {
     // Recursive, everything exists, overwrite a real file with a link (if same name)
     // Because -R implies to not follow links!

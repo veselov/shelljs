@@ -12,7 +12,7 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #14', t => {
+test('invalid permissions', t => {
   let result = shell.chmod('blah');
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -36,7 +36,7 @@ test('Test files - the bitmasking is to ignore the upper bits.', t => {
   );
 });
 
-test('No Test Title #15', t => {
+test('symbolic mode', t => {
   let result = shell.chmod('o+x', 'resources/chmod/file1');
   t.is(result.code, 0);
   t.is(
@@ -47,7 +47,7 @@ test('No Test Title #15', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #16', t => {
+test('symbolic mode, without group', t => {
   let result = shell.chmod('+x', 'resources/chmod/file1');
   t.is(result.code, 0);
   t.is(
@@ -172,7 +172,7 @@ test('Test combinations', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #17', t => {
+test('multiple symbolic modes', t => {
   let result = shell.chmod('a-rwx,u+r', 'resources/chmod/file1');
   t.is(result.code, 0);
   t.is(
@@ -183,7 +183,7 @@ test('No Test Title #17', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #18', t => {
+test('multiple symbolic modes #2', t => {
   let result = shell.chmod('a-rwx,u+rw', 'resources/chmod/file1');
   t.is(result.code, 0);
   t.is(
@@ -194,7 +194,7 @@ test('No Test Title #18', t => {
   t.is(result.code, 0);
 });
 
-test('No Test Title #19', t => {
+test('multiple symbolic modes #3', t => {
   let result = shell.chmod('a-rwx,u+rwx', 'resources/chmod/file1');
   t.is(result.code, 0);
   t.is(

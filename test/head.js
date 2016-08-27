@@ -14,13 +14,13 @@ test.before(t => {
 // Invalids
 //
 
-test('No Test Title #9', t => {
+test('no args', t => {
   const result = shell.head();
   t.truthy(shell.error());
   t.is(result.code, 1);
 });
 
-test('No Test Title #10', t => {
+test('file does not exist', t => {
   t.is(common.existsSync('/asdfasdf'), false); // sanity check
   const result = shell.head('/adsfasdf'); // file does not exist
   t.truthy(shell.error());
