@@ -26,10 +26,9 @@ test('Stdout/Stderr', t => {
 
 test('CoffeeScript', t => {
   t.is(runScript('coffeescript.coffee').stdout, 'CoffeeScript: OK!\n');
+});
 
-  // @@TEST(No Test Title #28)
-
-  // Extension detection
+test('Extension detection', t => {
   const extDetectRet = runScript('a-file');
   t.is(extDetectRet.code, 0, 'error code works');
   t.is(extDetectRet.stdout, 'OK!\n', 'stdout works');

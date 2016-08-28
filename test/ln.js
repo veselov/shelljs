@@ -4,19 +4,7 @@ import common from '../src/common';
 import fs from 'fs';
 import path from 'path';
 
-// On Windows, symlinks for files need admin permissions. This helper
-// skips certain tests if we are on Windows and got an EPERM error
-function skipOnWinForEPERM(action, testCase) {
-  action();
-  const error = shell.error();
-
-  const isWindows = common.platform === 'win';
-  if (isWindows && error && /EPERM:/.test(error)) {
-    console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
-  } else {
-    testCase();
-  }
-}
+const skipOnWinForEPERM = require('./utils/utils').skipOnWinForEPERM;
 
 test.before(() => {
   shell.config.silent = true;

@@ -285,12 +285,10 @@ test('No Test Title #25', t => {
   );
   result = shell.chmod('644', 'resources/chmod/file1');
   t.is(result.code, 0);
+});
 
-  // @@TEST(Support capital X ("entry" permission aka directory-only execute))
-
-  // No Test Title #26
-  result = shell.chmod('744', 'resources/chmod/xdir');
-
+test('No Test Title #26', t => {
+  let result = shell.chmod('744', 'resources/chmod/xdir');
   t.is(result.code, 0);
   result = shell.chmod('644', 'resources/chmod/xdir/file');
   t.is(result.code, 0);

@@ -4,26 +4,20 @@ import common from '../src/common';
 import fs from 'fs';
 
 const numLines = require('./utils/utils').numLines;
+const skipOnWinForEPERM = require('./utils/utils').skipOnWinForEPERM;
 
-// On Windows, symlinks for files need admin permissions. This helper
-// skips certain tests if we are on Windows and got an EPERM error
-function skipOnWinForEPERM(action, testCase) {
-  action();
-  const error = shell.error();
-  const isWindows = common.platform === 'win';
-  if (isWindows && error && /EPERM:/.test(error)) {
-    console.log('Got EPERM when testing symlinks on Windows. Assuming non-admin environment and skipping test.');
-  } else {
-    testCase();
-  }
-}
+let curDir;
 
 test.before(() => {
-  shell.config.silent = true;
-  shell.rm('-rf', 'tmp');
-  shell.mkdir('tmp');
+  curDir = process.cwd(); // starts in shelljs/test
 });
 
+test.beforeEach(() => {
+  shell.config.silent = true;
+  shell.rm('-rf', 'tmp/');
+  shell.mkdir('tmp');
+  shell.cd(curDir);
+});
 
 //
 // Invalids
@@ -51,7 +45,6 @@ test('only an option', t => {
 });
 
 test('invalid option', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-@', 'resources/file1', 'tmp/file1'); // option not supported, files OK
   t.truthy(shell.error());
   t.is(result.code, 1);
@@ -157,7 +150,6 @@ test('simple - to file', t => {
 });
 
 test('simple - file list', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('resources/file1', 'resources/file2', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -167,7 +159,6 @@ test('simple - file list', t => {
 });
 
 test('simple - file list, array syntax', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp(['resources/file1', 'resources/file2'], 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -187,7 +178,6 @@ test('-f option', t => {
 });
 
 test('glob', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('resources/file?', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -215,7 +205,6 @@ test('wildcard', t => {
 });
 
 test('recursive, with regular files', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-R', 'resources/file1', 'resources/file2', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -225,7 +214,6 @@ test('recursive, with regular files', t => {
 });
 
 test('recursive, nothing exists', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-R', 'resources/cp', 'tmp');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -236,7 +224,6 @@ test('recursive, nothing exists', t => {
 test(
   'recursive, nothing exists, source ends in \'/\' (see Github issue #15)',
   t => {
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-R', 'resources/cp/', 'tmp/');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
@@ -248,7 +235,6 @@ test(
 test(
   'recursive, globbing regular files with extension (see Github issue #376)',
   t => {
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-R', 'resources/file*.txt', 'tmp');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
@@ -261,7 +247,6 @@ test(
 test(
   'recursive, copying one regular file (also related to Github issue #376)',
   t => {
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-R', 'resources/file1.txt', 'tmp');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
@@ -272,7 +257,6 @@ test(
 );
 
 test('recursive, everything exists, no force flag', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-R', 'resources/cp', 'tmp');
   const result = shell.cp('-R', 'resources/cp', 'tmp');
   t.is(shell.error(), null); // crash test only
@@ -284,7 +268,6 @@ test('-R implies to not follow links', t => {
   if (process.platform !== 'win32') {
     // Recursive, everything exists, overwrite a real file with a link (if same name)
     // Because -R implies to not follow links!
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-R', 'resources/cp/*', 'tmp');
     t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
     t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
@@ -292,7 +275,7 @@ test('-R implies to not follow links', t => {
       shell.cat('tmp/links/sym.lnk').toString(),
       shell.cat('tmp/fakeLinks/sym.lnk').toString()
     );
-    let result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
+    const result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -302,11 +285,13 @@ test('-R implies to not follow links', t => {
       shell.cat('tmp/links/sym.lnk').toString(),
       shell.cat('tmp/fakeLinks/sym.lnk').toString()
     );
+  }
+});
 
-    // @@TEST(No Test Title #43)
+test('No Test Title #43', t => {
+  if (process.platform !== 'win32') {
     // Recursive, everything exists, overwrite a real file *by following a link*
     // Because missing the -R implies -L.
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-R', 'resources/cp/*', 'tmp');
     t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
     t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
@@ -314,7 +299,7 @@ test('-R implies to not follow links', t => {
       shell.cat('tmp/links/sym.lnk').toString(),
       shell.cat('tmp/fakeLinks/sym.lnk').toString()
     );
-    result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
+    const result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
     t.is(result.code, 0);
@@ -329,7 +314,6 @@ test('-R implies to not follow links', t => {
 });
 
 test('recursive, everything exists, with force flag', t => {
-  shell.rm('-rf', 'tmp/*');
   let result = shell.cp('-R', 'resources/cp', 'tmp');
   shell.ShellString('changing things around').to('tmp/cp/dir_a/z');
   t.not(shell.cat('resources/cp/dir_a/z') + '', shell.cat('tmp/cp/dir_a/z') + ''); // before cp
@@ -343,7 +327,6 @@ test('recursive, everything exists, with force flag', t => {
 test(
   'recursive, creates dest dir since it\'s only one level deep (see Github issue #44)',
   t => {
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-r', 'resources/issue44', 'tmp/dir2');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
@@ -359,7 +342,6 @@ test(
 test(
   'recursive, does *not* create dest dir since it\'s too deep (see Github issue #44)',
   t => {
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-r', 'resources/issue44', 'tmp/dir2/dir3');
     t.truthy(shell.error());
     t.is(
@@ -372,7 +354,6 @@ test(
 );
 
 test('recursive, copies entire directory', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-r', 'resources/cp/dir_a', 'tmp/dest');
   t.is(shell.error(), null);
   t.truthy(!result.stderr);
@@ -381,7 +362,6 @@ test('recursive, copies entire directory', t => {
 });
 
 test('recursive, with trailing slash, does the exact same', t => {
-  shell.rm('-rf', 'tmp/*');
   const result = shell.cp('-r', 'resources/cp/dir_a/', 'tmp/dest');
   t.is(result.code, 0);
   t.is(shell.error(), null);
@@ -393,7 +373,6 @@ test(
   t => {
     if (common.platform !== 'win') {
       // preserve mode bits
-      shell.rm('-rf', 'tmp/*');
       const execBit = parseInt('001', 8);
       t.is(fs.statSync('resources/cp-mode-bits/executable').mode & execBit, execBit);
       shell.cp('resources/cp-mode-bits/executable', 'tmp/executable');
@@ -415,7 +394,6 @@ test('Make sure hidden files are copied recursively', t => {
 });
 
 test('no-recursive will copy regular files only', t => {
-  shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
   const result = shell.cp('resources/file1.txt', 'resources/ls/', 'tmp/');
   t.is(result.code, 1);
@@ -426,7 +404,6 @@ test('no-recursive will copy regular files only', t => {
 });
 
 test('no-recursive will copy regular files only', t => {
-  shell.rm('-rf', 'tmp/');
   shell.mkdir('tmp/');
 
   const result = shell.cp('resources/file1.txt', 'resources/file2.txt', 'resources/cp',
@@ -445,32 +422,39 @@ test('no-recursive will copy regular files only', t => {
 test('No Test Title #44', t => {
   if (process.platform !== 'win32') {
     // -R implies -P
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-R', 'resources/cp/links/sym.lnk', 'tmp');
     t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
+  }
+});
 
-    // @@TEST(No Test Title #45)
+test('No Test Title #45', t => {
+  if (process.platform !== 'win32') {
     // using -P explicitly works
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-P', 'resources/cp/links/sym.lnk', 'tmp');
     t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
+  }
+});
 
-    // @@TEST(No Test Title #46)
+test('No Test Title #46', t => {
+  if (process.platform !== 'win32') {
     // using -PR on a link to a folder does not follow the link
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-PR', 'resources/cp/symFolder', 'tmp');
     t.truthy(fs.lstatSync('tmp/symFolder').isSymbolicLink());
+  }
+});
 
-    // @@TEST(No Test Title #47)
+test('No Test Title #47', t => {
+  if (process.platform !== 'win32') {
     // -L overrides -P for copying directory
-    shell.rm('-rf', 'tmp/*');
     shell.cp('-LPR', 'resources/cp/symFolder', 'tmp');
     t.truthy(!fs.lstatSync('tmp/symFolder').isSymbolicLink());
     t.truthy(!fs.lstatSync('tmp/symFolder/sym.lnk').isSymbolicLink());
+  }
+});
 
-    // @@TEST(No Test Title #48)
+test('No Test Title #48', t => {
+  if (process.platform !== 'win32') {
     // Recursive, copies entire directory with no symlinks and -L option does not cause change in behavior.
-    shell.rm('-rf', 'tmp/*');
     const result = shell.cp('-rL', 'resources/cp/dir_a', 'tmp/dest');
     t.is(shell.error(), null);
     t.truthy(!result.stderr);
@@ -480,47 +464,38 @@ test('No Test Title #44', t => {
 });
 
 test('using -R on a link to a folder *does* follow the link', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-R', 'resources/cp/symFolder', 'tmp');
   t.truthy(!fs.lstatSync('tmp/symFolder').isSymbolicLink());
 });
 
 test('Without -R, -L is implied', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('resources/cp/links/sym.lnk', 'tmp');
   t.truthy(!fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
 test('-L explicitly works', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-L', 'resources/cp/links/sym.lnk', 'tmp');
   t.truthy(!fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
 test('using -LR does not imply -P', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-LR', 'resources/cp/links/sym.lnk', 'tmp');
   t.truthy(!fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
 test('using -LR also works recursively on directories containing links', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-LR', 'resources/cp/links', 'tmp');
   t.truthy(!fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink());
 });
 
 test('-L always overrides a -P', t => {
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-LP', 'resources/cp/links/sym.lnk', 'tmp');
   t.truthy(!fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
-  shell.rm('-rf', 'tmp/*');
   shell.cp('-LPR', 'resources/cp/links/sym.lnk', 'tmp');
   t.truthy(!fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
 test('Test max depth.', t => {
-  shell.rm('-rf', 'tmp/');
-  shell.mkdir('tmp/');
   shell.config.maxdepth = 32;
   let directory = '';
   for (let i = 1; i < 40; i++) {
@@ -536,32 +511,33 @@ test('Test max depth.', t => {
   t.truthy(shell.test('-d', 'tmp/0/' + directory));
   // Check full copy of directory does not exist.
   t.truthy(!shell.test('-d', 'tmp/copytestdepth' + directory));
-  // Check last directory to exist is bellow maxdepth.
+  // Check last directory to exist is below maxdepth.
   t.truthy(shell.test('-d', 'tmp/copytestdepth' + directory32deep));
   t.truthy(!shell.test('-d', 'tmp/copytestdepth' + directory32deep + '/32'));
-});
-
-test('Only complete sym link checks if script has permission to do so.', t => {
-  skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'tmp/0', 'tmp/symlinktest'), function () {
+  skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'tmp/0', 'tmp/symlinktest'), () => {
     if (!shell.test('-L', 'tmp/symlinktest')) {
-      return;
+      t.fail();
     }
-    shell.rm('-rf', 'tmp/symlinktest');
-    // Create sym links to check for cycle.
+
+    // Create symlinks to check for cycle.
     shell.cd('tmp/0/1/2/3/4');
+    t.truthy(!shell.error());
     shell.ln('-s', '../../../2', 'link');
+    t.truthy(!shell.error());
     shell.ln('-s', './5/6/7', 'link1');
+    t.truthy(!shell.error());
     shell.cd('../../../../../..');
+    t.truthy(!shell.error());
     t.truthy(shell.test('-d', 'tmp/'));
 
-  // @@TEST(No Test Title #49)
-    shell.rm('-fr', 'tmp/copytestdepth');
-    shell.cp('-r', 'tmp/0', 'tmp/copytestdepth');
+    shell.cp('-r', 'tmp/0/1', 'tmp/copytestdepth');
+    t.truthy(!shell.error());
     t.truthy(shell.test('-d', 'tmp/copytestdepth/1/2/3/4/link/3/4/link/3/4'));
+  });
+});
 
-  // @@TEST(No Test Title #50)
-    // Test copying of symlinked files cp -L.
-    shell.rm('-fr', 'tmp');
+test('cp -L follows symlinks', t => {
+  skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'tmp/0', 'tmp/symlinktest'), () => {
     shell.mkdir('-p', 'tmp/sub');
     shell.mkdir('-p', 'tmp/new');
     shell.cp('-f', 'resources/file1.txt', 'tmp/sub/file.txt');
@@ -570,27 +546,21 @@ test('Only complete sym link checks if script has permission to do so.', t => {
     shell.ln('-s', 'file.txt', 'sym.lnk');
     shell.cd('..');
     shell.cp('-L', 'sub/*', 'new/');
-
-  // @@TEST(No Test Title #51)
-    // Ensure copies are files.
     shell.cd('new');
+
     shell.cp('-f', '../../resources/file2.txt', 'file.txt');
     t.is(shell.cat('file.txt').toString(), 'test2\n');
     // Ensure other files have not changed.
     t.is(shell.cat('foo.lnk').toString(), 'test1\n');
     t.is(shell.cat('sym.lnk').toString(), 'test1\n');
-
-  // @@TEST(No Test Title #52)
-    // Ensure the links are converted to files.
     t.is(shell.test('-L', 'foo.lnk'), false);
     t.is(shell.test('-L', 'sym.lnk'), false);
     shell.cd('../..');
+  });
+});
 
-  // @@TEST(No Test Title #53)
-    // Test with recursive option and symlinks.
-
-  // @@TEST(No Test Title #54)
-    shell.rm('-fr', 'tmp');
+test('Test with recursive option and symlinks.', t => {
+  skipOnWinForEPERM(shell.ln.bind(shell, '-s', 'tmp/0', 'tmp/symlinktest'), () => {
     shell.mkdir('-p', 'tmp/sub/sub1');
     shell.cp('-f', 'resources/file1.txt', 'tmp/sub/file.txt');
     shell.cp('-f', 'resources/file1.txt', 'tmp/sub/sub1/file.txt');
@@ -601,8 +571,7 @@ test('Only complete sym link checks if script has permission to do so.', t => {
     shell.ln('-s', '../file.txt', 'foo.lnk');
     shell.ln('-s', '../file.txt', 'sym.lnk');
 
-  // @@TEST(No Test Title #55)
-    // Ensure file reads from proper source.
+    // Ensure file reads from proper source
     t.is(shell.cat('file.txt').toString(), 'test1\n');
     t.is(shell.cat('foo.lnk').toString(), 'test1\n');
     t.is(shell.cat('sym.lnk').toString(), 'test1\n');
@@ -612,7 +581,6 @@ test('Only complete sym link checks if script has permission to do so.', t => {
     shell.cp('-rL', 'sub/', 'new/');
     shell.cd('new');
 
-  // @@TEST(No Test Title #56)
     // Ensure copies of files are symlinks by updating file contents.
     shell.cp('-f', '../../resources/file2.txt', 'file.txt');
     t.is(shell.cat('file.txt').toString(), 'test2\n');
@@ -620,21 +588,18 @@ test('Only complete sym link checks if script has permission to do so.', t => {
     t.is(shell.cat('foo.lnk').toString(), 'test1\n');
     t.is(shell.cat('sym.lnk').toString(), 'test1\n');
 
-  // @@TEST(No Test Title #57)
     // Ensure the links are converted to files.
     t.is(shell.test('-L', 'foo.lnk'), false);
     t.is(shell.test('-L', 'sym.lnk'), false);
 
-  // @@TEST(No Test Title #58)
+    // Ensure other files have not changed.
     shell.cd('sub1');
     shell.cp('-f', '../../../resources/file2.txt', 'file.txt');
     t.is(shell.cat('file.txt').toString(), 'test2\n');
-    // Ensure other files have not changed.
     t.is(shell.cat('foo.lnk').toString(), 'test1\n');
     t.is(shell.cat('sym.lnk').toString(), 'test1\n');
 
-  // @@TEST(No Test Title #59)
-    // Ensure the links are converted to files.
+    // Ensure the links are converted to files
     t.is(shell.test('-L', 'foo.lnk'), false);
     t.is(shell.test('-L', 'sym.lnk'), false);
   });
