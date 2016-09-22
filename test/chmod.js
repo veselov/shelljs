@@ -1,6 +1,5 @@
 import test from 'ava';
 import shell from '..';
-import common from '../src/common';
 import fs from 'fs';
 
 test.before(() => {

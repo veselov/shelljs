@@ -52,9 +52,9 @@ test('No Test Title #32', t => {
   t.is(common.existsSync('/asdfasdf/foobar'), false);
 });
 
-test('Check for invalid permissions', t => {
-  if (process.platform !== 'win32') {
-    // This test case only works on unix, but should work on Windows as well
+if (process.platform !== 'win32') {
+  test('Check for invalid permissions', t => {
+      // This test case only works on unix, but should work on Windows as well
     const dirName = 'nowritedir';
     shell.mkdir(dirName);
     t.truthy(!shell.error());
@@ -62,14 +62,16 @@ test('Check for invalid permissions', t => {
     const result = shell.mkdir(dirName + '/foo');
     t.is(result.code, 1);
     t.is(
-      result.stderr,
-      'mkdir: cannot create directory nowritedir/foo: Permission denied'
-    );
+        result.stderr,
+        'mkdir: cannot create directory nowritedir/foo: Permission denied'
+      );
     t.truthy(shell.error());
     t.is(common.existsSync(dirName + '/foo'), false);
     shell.rm('-rf', dirName); // clean up
-  }
-});
+  });
+} else {
+  test.skip('Check for invalid permissions');
+}
 
 //
 // Valids

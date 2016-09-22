@@ -136,7 +136,7 @@ test('make sure * in string-regex is not globbed', t => {
 });
 
 // TODO(nate): refactor this to a beforeEach step
-test('No Test Title #10', t => {
+test('No Test Title #10', t => { // eslint-disable-line
   shell.cp('-f', 'resources/file1', 'tmp/file1');
   shell.cp('-f', 'resources/file2', 'tmp/file2');
 });
