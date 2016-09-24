@@ -2,6 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
+import windows from './_windows';
 
 test.before(() => {
   shell.config.silent = true;
@@ -356,8 +357,8 @@ test('long option, single file', t => {
   t.is(result.nlink, 1);
   t.is(result.size, 5);
   t.truthy(result.mode); // check that these keys exist
-  t.truthy(process.platform === 'win32' || result.uid); // only on unix
-  t.truthy(process.platform === 'win32' || result.gid); // only on unix
+  t.truthy(windows.isWindows || result.uid); // only on unix
+  t.truthy(windows.isWindows || result.gid); // only on unix
   t.truthy(result.mtime); // check that these keys exist
   t.truthy(result.atime); // check that these keys exist
   t.truthy(result.ctime); // check that these keys exist
@@ -373,8 +374,8 @@ test('long option, glob files', t => {
   t.is(result.nlink, 1);
   t.is(result.size, 5);
   t.truthy(result.mode); // check that these keys exist
-  t.truthy(process.platform === 'win32' || result.uid); // only on unix
-  t.truthy(process.platform === 'win32' || result.gid); // only on unix
+  t.truthy(windows.isWindows || result.uid); // only on unix
+  t.truthy(windows.isWindows || result.gid); // only on unix
   t.truthy(result.mtime); // check that these keys exist
   t.truthy(result.atime); // check that these keys exist
   t.truthy(result.ctime); // check that these keys exist
@@ -399,8 +400,8 @@ test('long option, directory', t => {
   t.is(result.nlink, 1);
   t.is(result.size, 5);
   t.truthy(result.mode); // check that these keys exist
-  t.truthy(process.platform === 'win32' || result.uid); // only on unix
-  t.truthy(process.platform === 'win32' || result.gid); // only on unix
+  t.truthy(windows.isWindows || result.uid); // only on unix
+  t.truthy(windows.isWindows || result.gid); // only on unix
   t.truthy(result.mtime); // check that these keys exist
   t.truthy(result.atime); // check that these keys exist
   t.truthy(result.ctime); // check that these keys exist
@@ -426,8 +427,8 @@ test('long option, directory, recursive (and windows converts slashes)', t => {
   t.truthy(typeof result.nlink === 'number'); // This can vary between the local machine and travis
   t.truthy(typeof result.size === 'number'); // This can vary between different file systems
   t.truthy(result.mode); // check that these keys exist
-  t.truthy(process.platform === 'win32' || result.uid); // only on unix
-  t.truthy(process.platform === 'win32' || result.gid); // only on unix
+  t.truthy(windows.isWindows || result.uid); // only on unix
+  t.truthy(windows.isWindows || result.gid); // only on unix
   t.truthy(result.mtime); // check that these keys exist
   t.truthy(result.atime); // check that these keys exist
   t.truthy(result.ctime); // check that these keys exist

@@ -1,6 +1,7 @@
 import test from 'ava';
 import shell from '..';
 import common from '../src/common';
+import windows from './_windows';
 
 test.before(() => {
   shell.config.silent = true;
@@ -86,42 +87,32 @@ test('No Test Title #39', t => {
   t.is(result, false);
 });
 
-test('No Test Title #39', t => {
-  if (common.platform !== 'win') {
-    const result = shell.test('-d', 'resources/link');
-    t.is(shell.error(), null);
-    t.is(result, false);
-  }
+windows.skip('No Test Title #39', t => {
+  const result = shell.test('-d', 'resources/link');
+  t.is(shell.error(), null);
+  t.is(result, false);
 });
 
-test('No Test Title #39', t => {
-  if (common.platform !== 'win') {
-    const result = shell.test('-f', 'resources/link');
-    t.is(shell.error(), null);
-    t.is(result, true);// true
-  }
+windows.skip('No Test Title #39', t => {
+  const result = shell.test('-f', 'resources/link');
+  t.is(shell.error(), null);
+  t.is(result, true);// true
 });
 
-test('No Test Title #39', t => {
-  if (common.platform !== 'win') {
-    const result = shell.test('-L', 'resources/link');
-    t.is(shell.error(), null);
-    t.is(result, true);// true
-  }
+windows.skip('No Test Title #39', t => {
+  const result = shell.test('-L', 'resources/link');
+  t.is(shell.error(), null);
+  t.is(result, true);// true
 });
 
-test('No Test Title #39', t => {
-  if (common.platform !== 'win') {
-    const result = shell.test('-L', 'resources/badlink');
-    t.is(shell.error(), null);
-    t.is(result, true);// true
-  }
+windows.skip('No Test Title #39', t => {
+  const result = shell.test('-L', 'resources/badlink');
+  t.is(shell.error(), null);
+  t.is(result, true);// true
 });
 
-test('No Test Title #39', t => {
-  if (common.platform !== 'win') {
-    const result = shell.test('-L', 'resources/404');
-    t.is(shell.error(), null);
-    t.is(result, false);// false
-  }
+windows.skip('No Test Title #39', t => {
+  const result = shell.test('-L', 'resources/404');
+  t.is(shell.error(), null);
+  t.is(result, false);// false
 });

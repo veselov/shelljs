@@ -3,6 +3,7 @@ import shell from '..';
 import util from 'util';
 import path from 'path';
 import os from 'os';
+import windows from './_windows';
 
 test.before(() => {
   shell.config.silent = true;
@@ -86,7 +87,7 @@ test('check quotes escaping', t => {
 });
 
 test('set cwd', t => {
-  const cmdString = process.platform === 'win32' ? 'cd' : 'pwd';
+  const cmdString = windows.isWindows ? 'cd' : 'pwd';
   const result = shell.exec(cmdString, { cwd: '..' });
   t.is(shell.error(), null);
   t.is(result.code, 0);
@@ -119,27 +120,27 @@ test('set timeout option', t => {
 test('check process.env works', t => {
   t.truthy(!shell.env.FOO);
   shell.env.FOO = 'Hello world';
-  const result = shell.exec(process.platform !== 'win32' ? 'echo $FOO' : 'echo %FOO%');
+  const result = shell.exec(windows.notWindows ? 'echo $FOO' : 'echo %FOO%');
   t.truthy(!shell.error());
   t.is(result.code, 0);
   t.is(result.stdout, 'Hello world' + os.EOL);
   t.is(result.stderr, '');
 });
 
-test('set shell option (TODO: add tests for Windows)', t => {
-  if (process.platform !== 'win32') {
-    let result = shell.exec('echo $0');
+test.todo('set shell option for windows');
+
+windows.skip('set shell option', t => {
+  let result = shell.exec('echo $0');
+  t.truthy(!shell.error());
+  t.is(result.code, 0);
+  t.is(result.stdout, '/bin/sh\n'); // sh by default
+  const bashPath = shell.which('bash').trim();
+  // this option doesn't work on v0.10
+  if (bashPath && process.version >= 'v0.11') {
+    result = shell.exec('echo $0', { shell: '/bin/bash' });
     t.truthy(!shell.error());
     t.is(result.code, 0);
-    t.is(result.stdout, '/bin/sh\n'); // sh by default
-    const bashPath = shell.which('bash').trim();
-    // this option doesn't work on v0.10
-    if (bashPath && process.version >= 'v0.11') {
-      result = shell.exec('echo $0', { shell: '/bin/bash' });
-      t.truthy(!shell.error());
-      t.is(result.code, 0);
-      t.is(result.stdout, '/bin/bash\n');
-    }
+    t.is(result.stdout, '/bin/bash\n');
   }
 });
 

@@ -3,6 +3,7 @@ import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
 import crypto from 'crypto';
+import windows from './_windows';
 
 function resetUtimes(f) {
   const d = new Date();
@@ -160,12 +161,10 @@ test('file array', t => {
   t.truthy(common.existsSync(testFile2));
 });
 
-test('touching broken link creates a new file', t => {
-  if (process.platform !== 'win32') {
-    const result = shell.touch('resources/badlink');
-    t.is(result.code, 0);
-    t.truthy(!shell.error());
-    t.truthy(common.existsSync('resources/not_existed_file'));
-    shell.rm('resources/not_existed_file');
-  }
+windows.skip('touching broken link creates a new file', t => {
+  const result = shell.touch('resources/badlink');
+  t.is(result.code, 0);
+  t.truthy(!shell.error());
+  t.truthy(common.existsSync('resources/not_existed_file'));
+  shell.rm('resources/not_existed_file');
 });

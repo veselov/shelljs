@@ -3,6 +3,7 @@ import shell from '..';
 import common from '../src/common';
 import path from 'path';
 import fs from 'fs';
+import windows from './_windows';
 
 test.before(() => {
   shell.config.silent = true;
@@ -262,16 +263,14 @@ test('remove symbolic link to a dir', t => {
   t.is(common.existsSync('tmp/rm/a_dir'), true);
 });
 
-test('remove broken symbolic link', t => {
-  if (process.platform !== 'win32') {
-    let result = shell.rm('-rf', 'tmp');
-    shell.mkdir('tmp');
-    shell.cp('-R', 'resources/rm', 'tmp');
-    t.truthy(shell.test('-L', 'tmp/rm/fake.lnk'));
-    result = shell.rm('tmp/rm/fake.lnk');
-    t.is(shell.error(), null);
-    t.is(result.code, 0);
-    t.truthy(!shell.test('-L', 'tmp/rm/fake.lnk'));
-    t.is(common.existsSync('tmp/rm/fake.lnk'), false);
-  }
+windows.skip('remove broken symbolic link', t => {
+  let result = shell.rm('-rf', 'tmp');
+  shell.mkdir('tmp');
+  shell.cp('-R', 'resources/rm', 'tmp');
+  t.truthy(shell.test('-L', 'tmp/rm/fake.lnk'));
+  result = shell.rm('tmp/rm/fake.lnk');
+  t.is(shell.error(), null);
+  t.is(result.code, 0);
+  t.truthy(!shell.test('-L', 'tmp/rm/fake.lnk'));
+  t.is(common.existsSync('tmp/rm/fake.lnk'), false);
 });

@@ -2,6 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
+import windows from './_windows';
 
 const numLines = require('./utils/utils').numLines;
 const skipOnWinForEPERM = require('./utils/utils').skipOnWinForEPERM;
@@ -264,53 +265,49 @@ test('recursive, everything exists, no force flag', t => {
   t.is(result.code, 0);
 });
 
-test('-R implies to not follow links', t => {
-  if (process.platform !== 'win32') {
-    // Recursive, everything exists, overwrite a real file with a link (if same name)
-    // Because -R implies to not follow links!
-    shell.cp('-R', 'resources/cp/*', 'tmp');
-    t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
-    t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
-    t.not(
-      shell.cat('tmp/links/sym.lnk').toString(),
-      shell.cat('tmp/fakeLinks/sym.lnk').toString()
-    );
-    const result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
-    t.is(shell.error(), null);
-    t.truthy(!result.stderr);
-    t.is(result.code, 0);
-    t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
-    t.truthy(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink()); // this one is now a link
-    t.is(
-      shell.cat('tmp/links/sym.lnk').toString(),
-      shell.cat('tmp/fakeLinks/sym.lnk').toString()
-    );
-  }
+windows.skip('-R implies to not follow links', t => {
+  // Recursive, everything exists, overwrite a real file with a link (if same name)
+  // Because -R implies to not follow links!
+  shell.cp('-R', 'resources/cp/*', 'tmp');
+  t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
+  t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
+  t.not(
+    shell.cat('tmp/links/sym.lnk').toString(),
+    shell.cat('tmp/fakeLinks/sym.lnk').toString()
+  );
+  const result = shell.cp('-R', 'tmp/links/*', 'tmp/fakeLinks');
+  t.is(shell.error(), null);
+  t.truthy(!result.stderr);
+  t.is(result.code, 0);
+  t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
+  t.truthy(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink()); // this one is now a link
+  t.is(
+    shell.cat('tmp/links/sym.lnk').toString(),
+    shell.cat('tmp/fakeLinks/sym.lnk').toString()
+  );
 });
 
-test('No Test Title #43', t => {
-  if (process.platform !== 'win32') {
-    // Recursive, everything exists, overwrite a real file *by following a link*
-    // Because missing the -R implies -L.
-    shell.cp('-R', 'resources/cp/*', 'tmp');
-    t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
-    t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
-    t.not(
-      shell.cat('tmp/links/sym.lnk').toString(),
-      shell.cat('tmp/fakeLinks/sym.lnk').toString()
-    );
-    const result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
-    t.is(shell.error(), null);
-    t.truthy(!result.stderr);
-    t.is(result.code, 0);
-    t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
-    t.truthy(!fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink()); // this one is still not a link
-    // But it still follows the link
-    t.is(
-      shell.cat('tmp/links/sym.lnk').toString(),
-      shell.cat('tmp/fakeLinks/sym.lnk').toString()
-    );
-  }
+windows.skip('No Test Title #43', t => {
+  // Recursive, everything exists, overwrite a real file *by following a link*
+  // Because missing the -R implies -L.
+  shell.cp('-R', 'resources/cp/*', 'tmp');
+  t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
+  t.truthy(!(fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink())); // this one isn't
+  t.not(
+    shell.cat('tmp/links/sym.lnk').toString(),
+    shell.cat('tmp/fakeLinks/sym.lnk').toString()
+  );
+  const result = shell.cp('tmp/links/*', 'tmp/fakeLinks'); // don't use -R
+  t.is(shell.error(), null);
+  t.truthy(!result.stderr);
+  t.is(result.code, 0);
+  t.truthy(fs.lstatSync('tmp/links/sym.lnk').isSymbolicLink()); // this one is a link
+  t.truthy(!fs.lstatSync('tmp/fakeLinks/sym.lnk').isSymbolicLink()); // this one is still not a link
+  // But it still follows the link
+  t.is(
+    shell.cat('tmp/links/sym.lnk').toString(),
+    shell.cat('tmp/fakeLinks/sym.lnk').toString()
+  );
 });
 
 test('recursive, everything exists, with force flag', t => {
@@ -368,19 +365,17 @@ test('recursive, with trailing slash, does the exact same', t => {
   t.is(common.existsSync('tmp/dest/z'), true);
 });
 
-test(
+windows.skip(
   'On Windows, permission bits are quite different so skip those tests for now',
   t => {
-    if (common.platform !== 'win') {
-      // preserve mode bits
-      const execBit = parseInt('001', 8);
-      t.is(fs.statSync('resources/cp-mode-bits/executable').mode & execBit, execBit);
-      shell.cp('resources/cp-mode-bits/executable', 'tmp/executable');
-      t.is(
-        fs.statSync('resources/cp-mode-bits/executable').mode,
-        fs.statSync('tmp/executable').mode
-      );
-    }
+    // preserve mode bits
+    const execBit = parseInt('001', 8);
+    t.is(fs.statSync('resources/cp-mode-bits/executable').mode & execBit, execBit);
+    shell.cp('resources/cp-mode-bits/executable', 'tmp/executable');
+    t.is(
+      fs.statSync('resources/cp-mode-bits/executable').mode,
+      fs.statSync('tmp/executable').mode
+    );
   }
 );
 
@@ -419,48 +414,38 @@ test('no-recursive will copy regular files only', t => {
   t.truthy(common.existsSync('tmp/file2.txt'));
 });
 
-test('No Test Title #44', t => {
-  if (process.platform !== 'win32') {
-    // -R implies -P
-    shell.cp('-R', 'resources/cp/links/sym.lnk', 'tmp');
-    t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
-  }
+windows.skip('No Test Title #44', t => {
+  // -R implies -P
+  shell.cp('-R', 'resources/cp/links/sym.lnk', 'tmp');
+  t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
-test('No Test Title #45', t => {
-  if (process.platform !== 'win32') {
-    // using -P explicitly works
-    shell.cp('-P', 'resources/cp/links/sym.lnk', 'tmp');
-    t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
-  }
+windows.skip('No Test Title #45', t => {
+  // using -P explicitly works
+  shell.cp('-P', 'resources/cp/links/sym.lnk', 'tmp');
+  t.truthy(fs.lstatSync('tmp/sym.lnk').isSymbolicLink());
 });
 
-test('No Test Title #46', t => {
-  if (process.platform !== 'win32') {
-    // using -PR on a link to a folder does not follow the link
-    shell.cp('-PR', 'resources/cp/symFolder', 'tmp');
-    t.truthy(fs.lstatSync('tmp/symFolder').isSymbolicLink());
-  }
+windows.skip('No Test Title #46', t => {
+  // using -PR on a link to a folder does not follow the link
+  shell.cp('-PR', 'resources/cp/symFolder', 'tmp');
+  t.truthy(fs.lstatSync('tmp/symFolder').isSymbolicLink());
 });
 
-test('No Test Title #47', t => {
-  if (process.platform !== 'win32') {
-    // -L overrides -P for copying directory
-    shell.cp('-LPR', 'resources/cp/symFolder', 'tmp');
-    t.truthy(!fs.lstatSync('tmp/symFolder').isSymbolicLink());
-    t.truthy(!fs.lstatSync('tmp/symFolder/sym.lnk').isSymbolicLink());
-  }
+windows.skip('No Test Title #47', t => {
+  // -L overrides -P for copying directory
+  shell.cp('-LPR', 'resources/cp/symFolder', 'tmp');
+  t.truthy(!fs.lstatSync('tmp/symFolder').isSymbolicLink());
+  t.truthy(!fs.lstatSync('tmp/symFolder/sym.lnk').isSymbolicLink());
 });
 
-test('No Test Title #48', t => {
-  if (process.platform !== 'win32') {
-    // Recursive, copies entire directory with no symlinks and -L option does not cause change in behavior.
-    const result = shell.cp('-rL', 'resources/cp/dir_a', 'tmp/dest');
-    t.is(shell.error(), null);
-    t.truthy(!result.stderr);
-    t.is(result.code, 0);
-    t.is(common.existsSync('tmp/dest/z'), true);
-  }
+windows.skip('No Test Title #48', t => {
+  // Recursive, copies entire directory with no symlinks and -L option does not cause change in behavior.
+  const result = shell.cp('-rL', 'resources/cp/dir_a', 'tmp/dest');
+  t.is(shell.error(), null);
+  t.truthy(!result.stderr);
+  t.is(result.code, 0);
+  t.is(common.existsSync('tmp/dest/z'), true);
 });
 
 test('using -R on a link to a folder *does* follow the link', t => {

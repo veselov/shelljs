@@ -1,6 +1,7 @@
 import test from 'ava';
 import shell from '..';
 import common from '../src/common';
+import windows from './_windows';
 
 test.before(() => {
   shell.config.silent = true;
@@ -37,14 +38,13 @@ test('No Test Title #59', t => {
   t.truthy(common.existsSync(node + ''));
 });
 
-test('No Test Title #60', t => {
-  if (process.platform === 'win32') {
-    // This should be equivalent on Windows
-    const node = shell.which('node');
-    const nodeExe = shell.which('node.exe');
-    t.truthy(!shell.error());
-    // If the paths are equal, then this file *should* exist, since that's
-    // already been checked.
-    t.is(node + '', nodeExe + '');
-  }
+// TODO: Why are we skipping this?
+windows.skip('No Test Title #60', t => {
+  // This should be equivalent on Windows
+  const node = shell.which('node');
+  const nodeExe = shell.which('node.exe');
+  t.truthy(!shell.error());
+  // If the paths are equal, then this file *should* exist, since that's
+  // already been checked.
+  t.is(node + '', nodeExe + '');
 });

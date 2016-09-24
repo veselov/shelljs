@@ -1,10 +1,11 @@
 import test from 'ava';
 import shell from '..';
 import path from 'path';
+import windows from './_windows';
 
 function runScript(name) {
   // prefix with 'node ' for Windows, don't prefix for OSX/Linux
-  const cmd = (process.platform === 'win32' ? JSON.stringify(process.execPath) + ' ' : '') + path.resolve(__dirname, '../bin/shjs');
+  const cmd = (windows.isWindows ? JSON.stringify(process.execPath) + ' ' : '') + path.resolve(__dirname, '../bin/shjs');
   const script = path.resolve(__dirname, 'resources', 'shjs', name);
   return shell.exec(cmd + ' ' + script, { silent: true });
 }

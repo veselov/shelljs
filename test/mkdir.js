@@ -2,6 +2,7 @@ import test from 'ava';
 import shell from '..';
 import common from '../src/common';
 import fs from 'fs';
+import windows from './_windows';
 
 const numLines = require('./utils/utils').numLines;
 
@@ -52,26 +53,22 @@ test('No Test Title #32', t => {
   t.is(common.existsSync('/asdfasdf/foobar'), false);
 });
 
-if (process.platform !== 'win32') {
-  test('Check for invalid permissions', t => {
-      // This test case only works on unix, but should work on Windows as well
-    const dirName = 'nowritedir';
-    shell.mkdir(dirName);
-    t.truthy(!shell.error());
-    shell.chmod('-w', dirName);
-    const result = shell.mkdir(dirName + '/foo');
-    t.is(result.code, 1);
-    t.is(
-        result.stderr,
-        'mkdir: cannot create directory nowritedir/foo: Permission denied'
-      );
-    t.truthy(shell.error());
-    t.is(common.existsSync(dirName + '/foo'), false);
-    shell.rm('-rf', dirName); // clean up
-  });
-} else {
-  test.skip('Check for invalid permissions');
-}
+// This test case only works on unix, but should work on Windows as well
+windows.skip('Check for invalid permissions', t => {
+  const dirName = 'nowritedir';
+  shell.mkdir(dirName);
+  t.truthy(!shell.error());
+  shell.chmod('-w', dirName);
+  const result = shell.mkdir(dirName + '/foo');
+  t.is(result.code, 1);
+  t.is(
+      result.stderr,
+      'mkdir: cannot create directory nowritedir/foo: Permission denied'
+    );
+  t.truthy(shell.error());
+  t.is(common.existsSync(dirName + '/foo'), false);
+  shell.rm('-rf', dirName); // clean up
+});
 
 //
 // Valids
