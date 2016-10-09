@@ -666,6 +666,30 @@ set('+e'); // this undoes a "set('-e')"
 Sets global configuration variables
 
 
+### cmd(command [, arguments...] [, options] [, callback])
+Available options (all `false` by default):
+
++ `silent`: Do not echo program output to console.
++ and any option available to NodeJS's
+  [child_process.spawnSync()](https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options)
+
+Examples:
+
+```javascript
+var version = cmd('node', '--version', {silent:true}).stdout;
+
+cmd('git', 'checkout', 'master', '--', 'file.js');
+```
+
+An alternative for [exec()](#execcommand--options--callback), with better
+security around globbing, comamnd injection, and variable expansion. This is
+guaranteed to only run one external command, and won't handle special
+characters in unexpected and unsafe ways.
+
+By default, this performs globbing on all platforms (but you can disable
+this for extra security using `set('-f')`).
+
+
 ## Non-Unix commands
 
 

@@ -120,6 +120,9 @@ require('./src/touch');
 //@include ./src/set
 require('./src/set');
 
+//@include ./src/cmd
+require('./src/cmd');
+
 
 //@
 //@ ## Non-Unix commands
